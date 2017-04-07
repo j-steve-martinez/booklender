@@ -15,7 +15,7 @@ export default class Login extends React.Component {
         email = e.target.elements.email.value;
         pwd = e.target.elements.pwd.value;
         data = {
-            route: 'login',
+            route: 'user',
             email: email,
             pwd: pwd,
         };
@@ -32,11 +32,11 @@ export default class Login extends React.Component {
                 <form onSubmit={this.submit} >
                     <div className="form-group">
                         <label htmlFor="email">Email address:</label>
-                        <input type="email" className="form-control" id="email" />
+                        <input type="email" className="form-control" id="email" required />
                     </div>
                     <div className="form-group">
                         <label htmlFor="pwd">Password:</label>
-                        <input type="password" className="form-control" id="pwd" />
+                        <input type="password" className="form-control" id="pwd" required />
                     </div>
                     <button type="submit" className="btn btn-default">Submit</button>
                 </form>

@@ -1,4 +1,3 @@
-
 /**
  * User Story: I can view all books posted by every user.
  * User Story: I can add a new book.
@@ -10,10 +9,13 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+import Books from './books.jsx';
+import Config from './config.jsx'
 import Header from './header.jsx';
 import Login from './login.jsx';
 import Signup from './signup.jsx';
 import Start from './start.jsx';
+import User from './user.jsx';
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -25,11 +27,37 @@ export default class Main extends React.Component {
     router(route) {
         console.log('main router');
         console.log(route);
-        this.setState({ route: route });
+        /**
+         * Routes:
+         *  login
+         *  signup
+         *  books
+         *  user
+         *  config
+         *  logout
+         */
+        if (route === 'logout') {
+            var auth = false;
+            this.setState({ route: route, auth: auth });
+        } else {
+            this.setState({ route: route });
+        }
     }
     ajax(data) {
         console.log('main ajax');
         console.log(data);
+        console.log(data.route);
+        /**
+         * Ajax to the server
+         */
+
+        /**
+         * This is a mockup
+         */
+        var route, auth;
+        route = data.route;
+        auth = { id: '12345', email: 'foo@bar.com' }
+        this.setState({ route: route, auth: auth });
     }
     render() {
         console.log('Main render');
@@ -42,8 +70,17 @@ export default class Main extends React.Component {
             case 'login':
                 page = <Login ajax={this.ajax} />
                 break;
+            case 'config':
+                page = <Config ajax={this.ajax} auth={this.state.auth} />
+                break;
             case 'signup':
                 page = <Signup ajax={this.ajax} />
+                break;
+            case 'user':
+                page = <User ajax={this.ajax} />
+                break;
+            case 'books':
+                page = <Books ajax={this.ajax} />
                 break;
             default:
                 page = <Start />

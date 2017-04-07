@@ -60,6 +60,14 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _books = __webpack_require__(183);
+
+	var _books2 = _interopRequireDefault(_books);
+
+	var _config = __webpack_require__(184);
+
+	var _config2 = _interopRequireDefault(_config);
+
 	var _header = __webpack_require__(1);
 
 	var _header2 = _interopRequireDefault(_header);
@@ -75,6 +83,10 @@
 	var _start = __webpack_require__(181);
 
 	var _start2 = _interopRequireDefault(_start);
+
+	var _user = __webpack_require__(182);
+
+	var _user2 = _interopRequireDefault(_user);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -106,13 +118,39 @@
 	        value: function router(route) {
 	            console.log('main router');
 	            console.log(route);
-	            this.setState({ route: route });
+	            /**
+	             * Routes:
+	             *  login
+	             *  signup
+	             *  books
+	             *  user
+	             *  config
+	             *  logout
+	             */
+	            if (route === 'logout') {
+	                var auth = false;
+	                this.setState({ route: route, auth: auth });
+	            } else {
+	                this.setState({ route: route });
+	            }
 	        }
 	    }, {
 	        key: 'ajax',
 	        value: function ajax(data) {
 	            console.log('main ajax');
 	            console.log(data);
+	            console.log(data.route);
+	            /**
+	             * Ajax to the server
+	             */
+
+	            /**
+	             * This is a mockup
+	             */
+	            var route, auth;
+	            route = data.route;
+	            auth = { id: '12345', email: 'foo@bar.com' };
+	            this.setState({ route: route, auth: auth });
 	        }
 	    }, {
 	        key: 'render',
@@ -127,8 +165,17 @@
 	                case 'login':
 	                    page = React.createElement(_login2.default, { ajax: this.ajax });
 	                    break;
+	                case 'config':
+	                    page = React.createElement(_config2.default, { ajax: this.ajax, auth: this.state.auth });
+	                    break;
 	                case 'signup':
 	                    page = React.createElement(_signup2.default, { ajax: this.ajax });
+	                    break;
+	                case 'user':
+	                    page = React.createElement(_user2.default, { ajax: this.ajax });
+	                    break;
+	                case 'books':
+	                    page = React.createElement(_books2.default, { ajax: this.ajax });
 	                    break;
 	                default:
 	                    page = React.createElement(_start2.default, null);
@@ -203,17 +250,6 @@
 	        value: function render() {
 	            console.log('header props');
 	            console.log(this.props);
-	            // var auth = this.props.auth;
-	            // console.log('auth');
-	            // console.log(auth);
-	            // var myHeader;
-	            // if (auth.id !== undefined && auth.id !== false) {
-	            //     console.log('is logged in');
-	            //     myHeader = <Logout router={this.props.router} auth={auth} />;
-	            // } else {
-	            //     console.log('not logged in');
-	            //     myHeader = <Login router={this.props.router} auth={auth} />;
-	            // }
 	            /**
 	             * Login links should be:
 	             *  All Books
@@ -229,7 +265,7 @@
 	                    null,
 	                    _react2.default.createElement(
 	                        'a',
-	                        { id: 'allBooks', onClick: this.cH, href: '#' },
+	                        { id: 'books', onClick: this.cH, href: '#' },
 	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
 	                        ' All Books'
 	                    )
@@ -239,7 +275,7 @@
 	                    null,
 	                    _react2.default.createElement(
 	                        'a',
-	                        { id: 'myBooks', onClick: this.cH, href: '#' },
+	                        { id: 'user', onClick: this.cH, href: '#' },
 	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-user' }),
 	                        ' My Books'
 	                    )
@@ -249,7 +285,7 @@
 	                    null,
 	                    _react2.default.createElement(
 	                        'a',
-	                        { id: 'configure', onClick: this.cH, href: '#' },
+	                        { id: 'config', onClick: this.cH, href: '#' },
 	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-cog' }),
 	                        ' Configure'
 	                    )
@@ -289,8 +325,18 @@
 	                    )
 	                )
 	            );
-	            var navs = login;
-	            // var navs = logout;
+	            var navs,
+	                auth = this.props.auth;
+	            console.log('auth');
+	            console.log(auth);
+	            var myHeader;
+	            if (auth.id !== undefined && auth.id !== false) {
+	                console.log('is logged in');
+	                navs = logout;
+	            } else {
+	                console.log('not logged in');
+	                navs = login;
+	            }
 	            return _react2.default.createElement(
 	                'nav',
 	                { className: 'navbar navbar-inverse' },
@@ -4419,7 +4465,7 @@
 	            email = e.target.elements.email.value;
 	            pwd = e.target.elements.pwd.value;
 	            data = {
-	                route: 'login',
+	                route: 'user',
 	                email: email,
 	                pwd: pwd
 	            };
@@ -4450,7 +4496,7 @@
 	                            { htmlFor: 'email' },
 	                            'Email address:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'email', className: 'form-control', id: 'email' })
+	                        _react2.default.createElement('input', { type: 'email', className: 'form-control', id: 'email', required: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -4460,7 +4506,7 @@
 	                            { htmlFor: 'pwd' },
 	                            'Password:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'pwd' })
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'pwd', required: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
@@ -21913,7 +21959,7 @@
 	            email = e.target.elements.email.value;
 	            pwd = e.target.elements.pwd.value;
 	            data = {
-	                route: 'signup',
+	                route: 'user',
 	                name: name,
 	                email: email,
 	                pwd: pwd
@@ -21955,7 +22001,7 @@
 	                            { htmlFor: 'email' },
 	                            'Email address:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'email', className: 'form-control', id: 'email' })
+	                        _react2.default.createElement('input', { type: 'email', className: 'form-control', id: 'email', required: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -21965,7 +22011,7 @@
 	                            { htmlFor: 'pwd' },
 	                            'Password:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'pwd' })
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'pwd', required: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
@@ -22041,6 +22087,326 @@
 	}(_react2.default.Component);
 
 	exports.default = Start;
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var User = function (_React$Component) {
+	    _inherits(User, _React$Component);
+
+	    function User(props) {
+	        _classCallCheck(this, User);
+
+	        var _this = _possibleConstructorReturn(this, (User.__proto__ || Object.getPrototypeOf(User)).call(this, props));
+
+	        _this.clickHandler = _this.clickHandler.bind(_this);
+	        _this.submit = _this.submit.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(User, [{
+	        key: 'clickHandler',
+	        value: function clickHandler(path) {
+	            console.log('User clickHandler');
+	            console.log(path);
+	        }
+	    }, {
+	        key: 'submit',
+	        value: function submit(e) {
+	            e.preventDefault();
+	            console.log('login submit');
+	            // console.log(e.target.elements);
+	            // console.log(e.target.elements.title.value);
+	            var data, title;
+	            title = e.target.elements.title.value;
+	            data = {
+	                route: 'title',
+	                title: title
+	            };
+	            console.log(data);
+	            this.props.ajax(data);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            console.log('User');
+	            console.log(this.props);
+	            var lending, borrow;
+	            lending = 2;
+	            borrow = 3;
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'jumbotron' },
+	                _react2.default.createElement(
+	                    'h2',
+	                    null,
+	                    'Username Mockup'
+	                ),
+	                _react2.default.createElement(
+	                    'button',
+	                    { className: 'btn btn-primary', type: 'button' },
+	                    'Borrowed ',
+	                    _react2.default.createElement(
+	                        'span',
+	                        { className: 'badge' },
+	                        borrow
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'button',
+	                    { className: 'btn btn-primary', type: 'button' },
+	                    'Lending ',
+	                    _react2.default.createElement(
+	                        'span',
+	                        { className: 'badge' },
+	                        lending
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'form',
+	                        { onSubmit: this.submit },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'form-group' },
+	                            _react2.default.createElement(
+	                                'label',
+	                                { htmlFor: 'title' },
+	                                'Book Title:'
+	                            ),
+	                            _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'title' })
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { type: 'submit', className: 'btn btn-default' },
+	                            'Submit'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return User;
+	}(_react2.default.Component);
+
+	exports.default = User;
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Books = function (_React$Component) {
+	    _inherits(Books, _React$Component);
+
+	    function Books(props) {
+	        _classCallCheck(this, Books);
+
+	        return _possibleConstructorReturn(this, (Books.__proto__ || Object.getPrototypeOf(Books)).call(this, props));
+	    }
+
+	    _createClass(Books, [{
+	        key: 'render',
+	        value: function render() {
+	            console.log('Books props');
+	            console.log(this.props);
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'jumbotron' },
+	                _react2.default.createElement(
+	                    'h2',
+	                    null,
+	                    'Available Books'
+	                ),
+	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
+	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
+	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' })
+	            );
+	        }
+	    }]);
+
+	    return Books;
+	}(_react2.default.Component);
+
+	exports.default = Books;
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Config = function (_React$Component) {
+	    _inherits(Config, _React$Component);
+
+	    function Config(props) {
+	        _classCallCheck(this, Config);
+
+	        var _this = _possibleConstructorReturn(this, (Config.__proto__ || Object.getPrototypeOf(Config)).call(this, props));
+
+	        _this.submit = _this.submit.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(Config, [{
+	        key: 'submit',
+	        value: function submit(e) {
+	            e.preventDefault();
+	            console.log('Config submit');
+	            // console.log(e.target.elements);
+	            // console.log(e.target.elements.name.value);
+	            // console.log(e.target.elements.email.value);
+	            // console.log(e.target.elements.city.value);
+	            // console.log(e.target.elements.state.value);
+	            var data, name, email, city, state;
+	            name = e.target.elements.name.value;
+	            email = e.target.elements.email.value;
+	            city = e.target.elements.city.value;
+	            state = e.target.elements.state.value;
+	            data = {
+	                route: 'user',
+	                name: name,
+	                email: email,
+	                city: city,
+	                state: state
+	            };
+	            console.log(data);
+	            this.props.ajax(data);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            console.log('Config');
+	            console.log(this.props);
+
+	            var email = this.props.auth.email;
+
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Update Your Profile'
+	                ),
+	                _react2.default.createElement(
+	                    'form',
+	                    { onSubmit: this.submit },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'email' },
+	                            'Email:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'email', className: 'form-control', id: 'email', value: email, readOnly: true })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'name' },
+	                            'Name:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name' })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'city' },
+	                            'City:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'city' })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'state' },
+	                            'State:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'state' })
+	                    ),
+	                    _react2.default.createElement(
+	                        'button',
+	                        { type: 'submit', className: 'btn btn-default' },
+	                        'Submit'
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Config;
+	}(_react2.default.Component);
+
+	exports.default = Config;
 
 /***/ }
 /******/ ]);

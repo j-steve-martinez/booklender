@@ -16,17 +16,6 @@ export default class Header extends React.Component {
     render() {
         console.log('header props');
         console.log(this.props);
-        // var auth = this.props.auth;
-        // console.log('auth');
-        // console.log(auth);
-        // var myHeader;
-        // if (auth.id !== undefined && auth.id !== false) {
-        //     console.log('is logged in');
-        //     myHeader = <Logout router={this.props.router} auth={auth} />;
-        // } else {
-        //     console.log('not logged in');
-        //     myHeader = <Login router={this.props.router} auth={auth} />;
-        // }
         /**
          * Login links should be:
          *  All Books
@@ -36,9 +25,9 @@ export default class Header extends React.Component {
          */
         var logout = (
             <ul className="nav navbar-nav navbar-right" >
-                <li><a id="allBooks" onClick={this.cH} href="#"><span className="glyphicon glyphicon-book"></span> All Books</a></li>
-                <li><a id="myBooks" onClick={this.cH} href="#"><span className="glyphicon glyphicon-user"></span> My Books</a></li>
-                <li><a id="configure" onClick={this.cH} href="#"><span className="glyphicon glyphicon-cog"></span> Configure</a></li>
+                <li><a id="books" onClick={this.cH} href="#"><span className="glyphicon glyphicon-book"></span> All Books</a></li>
+                <li><a id="user" onClick={this.cH} href="#"><span className="glyphicon glyphicon-user"></span> My Books</a></li>
+                <li><a id="config" onClick={this.cH} href="#"><span className="glyphicon glyphicon-cog"></span> Configure</a></li>
                 <li><a id="logout" onClick={this.cH} href="#"><span className="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         );
@@ -48,8 +37,17 @@ export default class Header extends React.Component {
                 <li><a id="login" onClick={this.cH} href="#"><span className="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
         );
-        var navs = login;
-        // var navs = logout;
+        var navs, auth = this.props.auth;
+        console.log('auth');
+        console.log(auth);
+        var myHeader;
+        if (auth.id !== undefined && auth.id !== false) {
+            console.log('is logged in');
+            navs = logout;
+        } else {
+            console.log('not logged in');
+            navs = login;
+        }
         return (
             <nav className="navbar navbar-inverse">
                 <div className="container-fluid">

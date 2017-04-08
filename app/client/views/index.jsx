@@ -22,7 +22,8 @@ export default class Main extends React.Component {
         super(props);
         this.router = this.router.bind(this);
         this.ajax = this.ajax.bind(this);
-        this.state = { auth: false, route: 'start' };
+        var auth = { _id: false, error: null };
+        this.state = { auth: auth, route: 'start' };
     }
     router(route) {
         console.log('main router');
@@ -49,7 +50,7 @@ export default class Main extends React.Component {
         /**
          * Ajax to the server
          */
-        var url, URL, method, contentType, route, header = {};
+        var auth, url, URL, method, contentType, route, header = {};
 
         route = data.route;
         url = window.location.origin;
@@ -58,16 +59,6 @@ export default class Main extends React.Component {
             case 'user':
                 console.log('route: user');
                 url = '/login' //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
-                // url += '/test'
-                // header.url = url;
-                // header.method = 'POST';
-                // header.contentType = 'text/html';
-                // header.dataType = 'text'
-                // header.data = JSON.stringify(data);
-                // header.data = data;
-                // header.dataType = 'html';
-
-
                 header.url = url;
                 header.method = 'POST';
                 header.contentType = "application/json";
@@ -89,12 +80,6 @@ export default class Main extends React.Component {
 
         console.log('ajax header');
         console.log(header);
-        // url = window.location.origin + '/api/quotes';
-        // header.url = url;
-        // header.method = 'POST';
-        // header.data = JSON.stringify(data);
-        // header.contentType = "application/json";
-        // header.dataType = 'json';
 
         /**
          * Get data from server
@@ -104,20 +89,39 @@ export default class Main extends React.Component {
                 console.log('AJAX .then');
                 console.log(results);
                 console.log(results.user.email);
+                console.log(results.user.password);
+                switch (route) {
+                    case 'signup':
+                        route = 'user';
+                        auth = results.user;
+                        break;
+                    case 'user':
+                        auth = results.user;
+                    default:
+                        break;
+                }
+
+                this.setState({ route: route, auth: auth });
             })
             .fail(err => {
                 console.log('AJAX .fail');
-                console.log(err);
+                if (route === 'signup') {
+                    console.log(JSON.parse(err.responseText));
+                    var auth = this.state.auth;
+                    auth.error = JSON.parse(err.responseText).error;
+                    console.log(auth);
+                    this.setState({ route: route, auth: auth });
+                    
+                }
             });
-        
+
 
         /**
          * This is a mockup
          */
-        var route, auth;
-        route = data.route;
-        auth = { id: '12345', email: 'foo@bar.com' }
-        this.setState({ route: route, auth: auth });
+        // var route, auth;
+        // route = data.route;
+        // auth = { id: '12345', email: 'foo@bar.com' }
     }
     render() {
         console.log('Main render');
@@ -134,7 +138,7 @@ export default class Main extends React.Component {
                 page = <Config ajax={this.ajax} auth={this.state.auth} />
                 break;
             case 'signup':
-                page = <Signup ajax={this.ajax} />
+                page = <Signup ajax={this.ajax} auth={this.state.auth} />
                 break;
             case 'user':
                 page = <User ajax={this.ajax} />

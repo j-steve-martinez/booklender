@@ -93,12 +93,15 @@ module.exports = function (app, passport) {
 				console.log('signup user');
 				console.log(user);
 				console.log(req.body);
+				console.log('err');
+				console.log(err);
 
 				if (err) { return next(err); }
-				if (!user) { return res.status(401).send({ "ok": false }); }
+				if (!user) { return res.status(401).send({ "error": "Email already in use!" }); }
 				req.logIn(user, function (err) {
+					console.log('logIn user');
+					console.log(user);
 					if (err) { return res.status(401).send({ "ok": false }); }
-					// return res.send({ "ok": true });
 					return res.send({ user });
 				});
 
@@ -155,4 +158,11 @@ module.exports = function (app, passport) {
 	// 	.post(isLoggedIn, clickHandler.addPoll)
 	// 	.patch(isLoggedIn, clickHandler.takeAuthPoll)
 	// 	.delete(isLoggedIn, clickHandler.delPoll)
+
+	// exports.logout = (req, res) => {
+	// 	req.logout();
+	// 	return res
+	// 		.status(200)
+	// 		.json({ success: 'Logged out!' });
+	// }
 };

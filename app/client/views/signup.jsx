@@ -23,20 +23,28 @@ export default class Signup extends React.Component {
             password: password,
         };
         console.log(data);
-        this.props.ajax( data);
+        this.props.ajax(data);
 
     }
     render() {
         console.log('Signup');
         console.log(this.props);
+        var error, message = this.props.auth.error;
+        if (message === null) {
+            error = null;
+        } else {
+            error = (
+                <div className="form-group">
+                    <label htmlFor="error">Error:</label>
+                    <input type="text" className="form-control" id="error" value={message} readOnly />
+                </div>
+            )
+        }
         return (
             <div>
                 <h1>Signup</h1>
                 <form onSubmit={this.submit} >
-                    {/*<div className="form-group">
-                        <label htmlFor="name">Name:</label>
-                        <input type="text" className="form-control" id="name" />
-                    </div>*/}
+                    {error}
                     <div className="form-group">
                         <label htmlFor="email">Email address:</label>
                         <input type="email" className="form-control" id="email" required />

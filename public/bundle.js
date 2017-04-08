@@ -108,7 +108,8 @@
 
 	        _this.router = _this.router.bind(_this);
 	        _this.ajax = _this.ajax.bind(_this);
-	        _this.state = { auth: false, route: 'start' };
+	        var auth = { _id: false, error: null };
+	        _this.state = { auth: auth, route: 'start' };
 	        return _this;
 	    }
 
@@ -136,12 +137,15 @@
 	    }, {
 	        key: 'ajax',
 	        value: function ajax(data) {
+	            var _this2 = this;
+
 	            console.log('main ajax');
 	            console.log(data);
 	            /**
 	             * Ajax to the server
 	             */
-	            var url,
+	            var auth,
+	                url,
 	                URL,
 	                method,
 	                contentType,
@@ -155,16 +159,6 @@
 	                case 'user':
 	                    console.log('route: user');
 	                    url = '/login'; //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
-	                    // url += '/test'
-	                    // header.url = url;
-	                    // header.method = 'POST';
-	                    // header.contentType = 'text/html';
-	                    // header.dataType = 'text'
-	                    // header.data = JSON.stringify(data);
-	                    // header.data = data;
-	                    // header.dataType = 'html';
-
-
 	                    header.url = url;
 	                    header.method = 'POST';
 	                    header.contentType = "application/json";
@@ -186,12 +180,6 @@
 
 	            console.log('ajax header');
 	            console.log(header);
-	            // url = window.location.origin + '/api/quotes';
-	            // header.url = url;
-	            // header.method = 'POST';
-	            // header.data = JSON.stringify(data);
-	            // header.contentType = "application/json";
-	            // header.dataType = 'json';
 
 	            /**
 	             * Get data from server
@@ -200,18 +188,36 @@
 	                console.log('AJAX .then');
 	                console.log(results);
 	                console.log(results.user.email);
+	                console.log(results.user.password);
+	                switch (route) {
+	                    case 'signup':
+	                        route = 'user';
+	                        auth = results.user;
+	                        break;
+	                    case 'user':
+	                        auth = results.user;
+	                    default:
+	                        break;
+	                }
+
+	                _this2.setState({ route: route, auth: auth });
 	            }).fail(function (err) {
 	                console.log('AJAX .fail');
-	                console.log(err);
+	                if (route === 'signup') {
+	                    console.log(JSON.parse(err.responseText));
+	                    var auth = _this2.state.auth;
+	                    auth.error = JSON.parse(err.responseText).error;
+	                    console.log(auth);
+	                    _this2.setState({ route: route, auth: auth });
+	                }
 	            });
 
 	            /**
 	             * This is a mockup
 	             */
-	            var route, auth;
-	            route = data.route;
-	            auth = { id: '12345', email: 'foo@bar.com' };
-	            this.setState({ route: route, auth: auth });
+	            // var route, auth;
+	            // route = data.route;
+	            // auth = { id: '12345', email: 'foo@bar.com' }
 	        }
 	    }, {
 	        key: 'render',
@@ -230,7 +236,7 @@
 	                    page = React.createElement(_config2.default, { ajax: this.ajax, auth: this.state.auth });
 	                    break;
 	                case 'signup':
-	                    page = React.createElement(_signup2.default, { ajax: this.ajax });
+	                    page = React.createElement(_signup2.default, { ajax: this.ajax, auth: this.state.auth });
 	                    break;
 	                case 'user':
 	                    page = React.createElement(_user2.default, { ajax: this.ajax });
@@ -4516,6 +4522,8 @@
 	    value: true
 	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
@@ -4637,8 +4645,10 @@
 	                auth = this.props.auth;
 	            console.log('auth');
 	            console.log(auth);
+	            console.log('typeof auth._id');
+	            console.log(_typeof(auth._id));
 	            var myHeader;
-	            if (auth.id !== undefined && auth.id !== false) {
+	            if (auth._id !== false) {
 	                console.log('is logged in');
 	                navs = logout;
 	            } else {
@@ -4840,6 +4850,22 @@
 	        value: function render() {
 	            console.log('Signup');
 	            console.log(this.props);
+	            var error,
+	                message = this.props.auth.error;
+	            if (message === null) {
+	                error = null;
+	            } else {
+	                error = _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-group' },
+	                    _react2.default.createElement(
+	                        'label',
+	                        { htmlFor: 'error' },
+	                        'Error:'
+	                    ),
+	                    _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'error', value: message, readOnly: true })
+	                );
+	            }
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -4851,6 +4877,7 @@
 	                _react2.default.createElement(
 	                    'form',
 	                    { onSubmit: this.submit },
+	                    error,
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'form-group' },

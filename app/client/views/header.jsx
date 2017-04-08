@@ -40,8 +40,10 @@ export default class Header extends React.Component {
         var navs, auth = this.props.auth;
         console.log('auth');
         console.log(auth);
+        console.log('typeof auth._id');
+        console.log(typeof auth._id);
         var myHeader;
-        if (auth.id !== undefined && auth.id !== false) {
+        if (auth._id !== false) {
             console.log('is logged in');
             navs = logout;
         } else {

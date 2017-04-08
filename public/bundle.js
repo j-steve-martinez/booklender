@@ -156,28 +156,29 @@
 	                    console.log('route: user');
 	                    url = '/login'; //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
 	                    // url += '/test'
-	                    header.url = url;
-	                    header.method = 'POST';
+	                    // header.url = url;
+	                    // header.method = 'POST';
 	                    // header.contentType = 'text/html';
 	                    // header.dataType = 'text'
 	                    // header.data = JSON.stringify(data);
-	                    header.data = data;
-	                    header.dataType = 'html';
+	                    // header.data = data;
+	                    // header.dataType = 'html';
+
+
+	                    header.url = url;
+	                    header.method = 'POST';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'signup':
 	                    console.log('route: user');
 	                    url = '/signup';
-	                    //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
 	                    header.url = url;
 	                    header.method = 'POST';
 	                    header.contentType = "application/json";
-	                    // header.contentType = "text/html";
-	                    // header.dataType = 'application/json'
 	                    header.dataType = 'json';
-	                    // header.dataType = 'text'
 	                    header.data = JSON.stringify(data);
-	                    // header.data = data;
-	                    // header.data = encodeURIComponent('email=' + data.email + '&' + 'password=' + data.password);
 	                    break;
 	                default:
 	                    break;
@@ -203,7 +204,6 @@
 	                console.log('AJAX .fail');
 	                console.log(err);
 	            });
-	            console.log('AJAX Finished');
 
 	            /**
 	             * This is a mockup
@@ -4714,14 +4714,14 @@
 	            console.log('login submit');
 	            // console.log(e.target.elements);
 	            // console.log(e.target.elements.email.value);
-	            // console.log(e.target.elements.pwd.value);
-	            var data, email, pwd;
+	            // console.log(e.target.elements.password.value);
+	            var data, email, password;
 	            email = e.target.elements.email.value;
-	            pwd = e.target.elements.pwd.value;
+	            password = e.target.elements.password.value;
 	            data = {
 	                route: 'user',
 	                email: email,
-	                pwd: pwd
+	                password: password
 	            };
 	            console.log(data);
 	            this.props.ajax(data);
@@ -4757,10 +4757,10 @@
 	                        { className: 'form-group' },
 	                        _react2.default.createElement(
 	                            'label',
-	                            { htmlFor: 'pwd' },
+	                            { htmlFor: 'password' },
 	                            'Password:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'pwd', required: true })
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'password', required: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',

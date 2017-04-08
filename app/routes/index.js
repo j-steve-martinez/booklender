@@ -94,17 +94,35 @@ module.exports = function (app, passport) {
 				console.log(user);
 				console.log(req.body);
 
-				// if (err) { return next(err); }
-				// req.logIn(user, function (err) {
-				// 	if (err) { return next(err); }
-				// 	console.log('req.logIn: true');
-				// 	console.log(user);
-				// 	console.log(res);
-				// 	// return res.send({ user: user });
-				// 	return res.json({ user: user });
-				// });
-				// console.log('sending user back to client');
-				// return res.json({ user: user });
+				if (err) { return next(err); }
+				if (!user) { return res.status(401).send({ "ok": false }); }
+				req.logIn(user, function (err) {
+					if (err) { return res.status(401).send({ "ok": false }); }
+					// return res.send({ "ok": true });
+					return res.send({ user });
+				});
+
+			})(req, res, next);
+		})
+		.get(isLoggedIn, (req, res) => {
+			console.log('signup .get()');
+		});
+
+
+	app.route('/login')
+		.post((req, res, next) => {
+
+			console.log('login req');
+			// console.log(req);
+			console.log(req.body);
+			console.log(req.body.email);
+			console.log(req.body.password);
+
+			passport.authenticate('login', function (err, user) {
+
+				console.log('login user');
+				console.log(user);
+				console.log(req.body);
 
 				if (err) { return next(err); }
 				if (!user) { return res.status(401).send({ "ok": false }); }
@@ -115,41 +133,8 @@ module.exports = function (app, passport) {
 				});
 
 			})(req, res, next);
-			// console.log(resp);
-			// passport.authenticate('signup');
-			// console.log(req.logIn);
-			// res.json({ status: 'ok' });
 		})
-		.get(isLoggedIn, (req, res) => {
-			console.log('signup .get()');
-		});
 
-
-	// app.route('/test')
-	// 	.get((req, res) => {
-	// 		console.log('test');
-	// 		console.log(req._parsedOriginalUrl);
-	// 		console.log(res);
-	// 		res.json({ status: 'fail' });
-	// 	})
-
-
-	app.route('/login')
-		// 	.post((req, res) => {
-		// 		console.log('login post');
-		// 		console.log(req._parsedOriginalUrl);
-		// 		passport.authenticate('local');
-		// 		console.log(req.isAuthenticated());
-		// 		res.end();
-		// res.json({ status: 'ok' });
-		// })
-		// .post((req, res)=>{
-		// 	console.log('local');
-		// 	console.log(req.session);
-		// 	console.log(req._passport);
-		// 	console.log(req.accepts());
-		// 	res.end();
-		// })
 		.get(isLoggedIn, (req, res) => {
 			console.log('login get');
 			// res.json({status: 'ok'});

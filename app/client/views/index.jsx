@@ -59,28 +59,29 @@ export default class Main extends React.Component {
                 console.log('route: user');
                 url = '/login' //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
                 // url += '/test'
-                header.url = url;
-                header.method = 'POST';
+                // header.url = url;
+                // header.method = 'POST';
                 // header.contentType = 'text/html';
                 // header.dataType = 'text'
                 // header.data = JSON.stringify(data);
-                header.data = data;
-                header.dataType = 'html';
-                break;
-            case 'signup':
-                console.log('route: user');
-                url = '/signup' 
-                //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
+                // header.data = data;
+                // header.dataType = 'html';
+
+
                 header.url = url;
                 header.method = 'POST';
                 header.contentType = "application/json";
-                // header.contentType = "text/html";
-                // header.dataType = 'application/json'
                 header.dataType = 'json'
-                // header.dataType = 'text'
                 header.data = JSON.stringify(data);
-                // header.data = data;
-                // header.data = encodeURIComponent('email=' + data.email + '&' + 'password=' + data.password);
+                break;
+            case 'signup':
+                console.log('route: user');
+                url = '/signup'
+                header.url = url;
+                header.method = 'POST';
+                header.contentType = "application/json";
+                header.dataType = 'json'
+                header.data = JSON.stringify(data);
                 break;
             default:
                 break;
@@ -103,13 +104,12 @@ export default class Main extends React.Component {
                 console.log('AJAX .then');
                 console.log(results);
                 console.log(results.user.email);
-    
             })
-            .fail(err=>{
+            .fail(err => {
                 console.log('AJAX .fail');
                 console.log(err);
             });
-            console.log('AJAX Finished');
+        
 
         /**
          * This is a mockup

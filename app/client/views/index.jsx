@@ -46,10 +46,70 @@ export default class Main extends React.Component {
     ajax(data) {
         console.log('main ajax');
         console.log(data);
-        console.log(data.route);
         /**
          * Ajax to the server
          */
+        var url, URL, method, contentType, route, header = {};
+
+        route = data.route;
+        url = window.location.origin;
+
+        switch (route) {
+            case 'user':
+                console.log('route: user');
+                url = '/login' //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
+                // url += '/test'
+                header.url = url;
+                header.method = 'POST';
+                // header.contentType = 'text/html';
+                // header.dataType = 'text'
+                // header.data = JSON.stringify(data);
+                header.data = data;
+                header.dataType = 'html';
+                break;
+            case 'signup':
+                console.log('route: user');
+                url = '/signup' 
+                //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
+                header.url = url;
+                header.method = 'POST';
+                header.contentType = "application/json";
+                // header.contentType = "text/html";
+                // header.dataType = 'application/json'
+                header.dataType = 'json'
+                // header.dataType = 'text'
+                header.data = JSON.stringify(data);
+                // header.data = data;
+                // header.data = encodeURIComponent('email=' + data.email + '&' + 'password=' + data.password);
+                break;
+            default:
+                break;
+        }
+
+        console.log('ajax header');
+        console.log(header);
+        // url = window.location.origin + '/api/quotes';
+        // header.url = url;
+        // header.method = 'POST';
+        // header.data = JSON.stringify(data);
+        // header.contentType = "application/json";
+        // header.dataType = 'json';
+
+        /**
+         * Get data from server
+         */
+        $.ajax(header)
+            .then(results => {
+                console.log('AJAX .then');
+                console.log(results);
+                console.log(results.user.email);
+    
+            })
+            .fail(err=>{
+                console.log('AJAX .fail');
+                console.log(err);
+            });
+            console.log('AJAX Finished');
 
         /**
          * This is a mockup

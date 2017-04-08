@@ -1,28 +1,25 @@
 'use strict';
 
-var Users = require('../models/users.js');
+var User = require('../models/users.js');
 var Poll = require('../models/polls.js');
 
-function ClickHandler () {
+function ClickHandler() {
 
-	this.addDefault = ()=>{
-		Poll.find({}, (err, data) => {
+	this.addDefault = () => {
+		User.find({}, (err, user) => {
+			console.log('default user');
+			console.log(user);
 			if (err) throw err;
-			if (data.length === 0) {
-				// add default poll
-				console.log('add default');
-				var poll = new Poll({
-					name : "Do You Like This App?",
-					uid : 'default',
-					isAuthReq : true,
-					list : [
-						{key : 'Yes', value : 0},
-						{key : 'No', value : 0}]
+			if (user.length === 0) {
+				var defaultUser = new User({
+					email: 'abc@cba.com',
+					password: 'abc'
 				});
-				poll.save((err, data) => {
+				defaultUser.save((err, data) => {
 					if (err) throw err;
+					console.log('default user saved!');
 					console.log(data);
-				})
+				});
 			}
 		});
 	}
@@ -51,16 +48,16 @@ function ClickHandler () {
 	}
 
 	this.addPoll = (req, res) => {
-		req.on('data', function(body) {
+		req.on('data', function (body) {
 
 			var data = JSON.parse(body);
 
-			Poll.find({name : data.name, uid : data.uid}, (err, poll) => {
+			Poll.find({ name: data.name, uid: data.uid }, (err, poll) => {
 				if (err) throw err;
 
 				if (poll.length) {
 					// console.log('sending json');
-					res.json({isExists : true, isSaved : false});
+					res.json({ isExists: true, isSaved: false });
 				} else {
 					var newPoll = new Poll(data);
 
@@ -68,10 +65,10 @@ function ClickHandler () {
 					newPoll.save(function (err, data) {
 						if (err) {
 							// console.log ('Error on save!');
-							res.json({isExists : false, isSaved : false});
+							res.json({ isExists: false, isSaved: false });
 						}
 						// console.log('data saved');
-						res.json({isExists : false, isSaved : true, poll : data});
+						res.json({ isExists: false, isSaved: true, poll: data });
 					});
 				}
 			});
@@ -81,7 +78,7 @@ function ClickHandler () {
 	this.getPoll = (req, res) => {
 		// console.log('getPoll');
 		Poll
-			.findOne({'_id': req.params.id})
+			.findOne({ '_id': req.params.id })
 			.exec((err, poll) => {
 				if (err) throw err;
 				res.json(poll)
@@ -91,14 +88,14 @@ function ClickHandler () {
 	this.takePoll = (req, res) => {
 		// console.log('editPoll');
 		// console.log(req.params.id);
-		req.on('data', function(body) {
+		req.on('data', function (body) {
 
 			var data = JSON.parse(body);
 
 			Poll
 				.find({
 					'_id': data.id,
-					'name' : data.name
+					'name': data.name
 				})
 				.exec((err, poll) => {
 					if (err) throw err;
@@ -107,24 +104,24 @@ function ClickHandler () {
 					// console.log(ret.isAuthReq);
 					// res.json(poll);
 					if (ret.isAuthReq) {
-						res.json({message : 'Not Authorized'})
+						res.json({ message: 'Not Authorized' })
 					} else {
 						Poll
-						.findOneAndUpdate({
-							'_id': data.id,
-							'name' : data.name,
-							'list.key' : data.key
-						},
+							.findOneAndUpdate({
+								'_id': data.id,
+								'name': data.name,
+								'list.key': data.key
+							},
 							{
-								$inc : { 'list.$.value': 1 }
+								$inc: { 'list.$.value': 1 }
 							},
 							// get the update poll
 							{ new: true }
-						)
-						.exec((err, poll) => {
-							if (err) throw err;
-							res.json(poll);
-						});
+							)
+							.exec((err, poll) => {
+								if (err) throw err;
+								res.json(poll);
+							});
 					}
 				})
 		});
@@ -133,7 +130,7 @@ function ClickHandler () {
 	this.takeAuthPoll = (req, res) => {
 		// console.log('takeAuthPoll');
 		// console.log(req.user);
-		req.on('data', function(body) {
+		req.on('data', function (body) {
 
 			var data = JSON.parse(body);
 			// console.log('takePoll data');
@@ -142,15 +139,15 @@ function ClickHandler () {
 			Poll
 				.findOneAndUpdate({
 					'_id': data.id,
-					'name' : data.name,
-					'list.key' : data.key
+					'name': data.name,
+					'list.key': data.key
 				},
-					{
-						$inc : { 'list.$.value': 1 },
-						$push : { voters : data.voter}
-					},
-					// get the update poll
-					{ new: true }
+				{
+					$inc: { 'list.$.value': 1 },
+					$push: { voters: data.voter }
+				},
+				// get the update poll
+				{ new: true }
 				)
 				.exec((err, poll) => {
 					if (err) throw err;
@@ -168,9 +165,9 @@ function ClickHandler () {
 			Poll
 				.update({
 					'_id': req.params.poll,
-					'name' : data.name
+					'name': data.name
 				},
-					{ $push : { list: { key: data.key, value : data.value}}}
+				{ $push: { list: { key: data.key, value: data.value } } }
 				)
 				.exec((err, poll) => {
 					if (err) throw err;
@@ -182,7 +179,7 @@ function ClickHandler () {
 	this.delPoll = (req, res) => {
 		// console.log('del getPoll');
 		Poll
-		  .findByIdAndRemove(req.params.poll)
+			.findByIdAndRemove(req.params.poll)
 			.exec((err, poll) => {
 				if (err) throw err;
 				res.json(poll)

@@ -82,50 +82,50 @@ module.exports = function (app, passport) {
 	app.route('/signup')
 		.post((req, res, next) => {
 
-			console.log('signup req');
+			// console.log('signup req');
 			// console.log(req);
-			console.log(req.body);
-			console.log(req.body.email);
-			console.log(req.body.password);
+			// console.log(req.body);
+			// console.log(req.body.email);
+			// console.log(req.body.password);
 
 			passport.authenticate('signup', function (err, user) {
 
-				console.log('signup user');
-				console.log(user);
-				console.log(req.body);
-				console.log('err');
-				console.log(err);
+				// console.log('signup user');
+				// console.log(user);
+				// console.log(req.body);
+				// console.log('err');
+				// console.log(err);
 
 				if (err) { return next(err); }
 				if (!user) { return res.status(401).send({ "error": "Email already in use!" }); }
 				req.logIn(user, function (err) {
-					console.log('logIn user');
-					console.log(user);
+					// console.log('logIn user');
+					// console.log(user);
 					if (err) { return res.status(401).send({ "ok": false }); }
 					return res.send({ user });
 				});
 
 			})(req, res, next);
 		})
-		.get(isLoggedIn, (req, res) => {
-			console.log('signup .get()');
-		});
+	// .get(isLoggedIn, (req, res) => {
+	// 	console.log('signup .get()');
+	// });
 
 
 	app.route('/login')
 		.post((req, res, next) => {
 
-			console.log('login req');
+			// console.log('login req');
 			// console.log(req);
-			console.log(req.body);
-			console.log(req.body.email);
-			console.log(req.body.password);
+			// console.log(req.body);
+			// console.log(req.body.email);
+			// console.log(req.body.password);
 
 			passport.authenticate('login', function (err, user) {
 
-				console.log('login user');
-				console.log(user);
-				console.log(req.body);
+				// console.log('login user');
+				// console.log(user);
+				// console.log(req.body);
 
 				if (err) { return next(err); }
 				if (!user) { return res.status(401).send({ "ok": false }); }
@@ -138,17 +138,20 @@ module.exports = function (app, passport) {
 			})(req, res, next);
 		})
 
-		.get(isLoggedIn, (req, res) => {
-			console.log('login get');
-			// res.json({status: 'ok'});
-			res.end();
-		});
+	// .get(isLoggedIn, (req, res) => {
+	// 	console.log('login get');
+	// 	// res.json({status: 'ok'});
+	// 	res.end();
+	// });
 
 	// app.route('/auth/local/callback')
 	// 	.get(passport.authenticate('local', {
 	// 		successRedirect: '/',
 	// 		failureRedirect: '/'
 	// 	}));
+
+	app.route('/update')
+		.post(isLoggedIn, clickHandler.update)
 
 	// add, get, edit, delete the user poll data
 	// must be authenticated

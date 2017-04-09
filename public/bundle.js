@@ -106,9 +106,9 @@
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
+	        var auth = { _id: false, error: null };
 	        _this.router = _this.router.bind(_this);
 	        _this.ajax = _this.ajax.bind(_this);
-	        var auth = { _id: false, error: null };
 	        _this.state = { auth: auth, route: 'start' };
 	        return _this;
 	    }
@@ -158,18 +158,27 @@
 	            url = window.location.origin;
 
 	            switch (route) {
-	                case 'user':
+	                case 'signup':
 	                    console.log('route: user');
-	                    url = '/login'; //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
+	                    url = '/signup';
 	                    header.url = url;
 	                    header.method = 'POST';
 	                    header.contentType = "application/json";
 	                    header.dataType = 'json';
 	                    header.data = JSON.stringify(data);
 	                    break;
-	                case 'signup':
+	                case 'update':
 	                    console.log('route: user');
-	                    url = '/signup';
+	                    url = '/update';
+	                    header.url = url;
+	                    header.method = 'POST';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
+	                    break;
+	                case 'user':
+	                    console.log('route: user');
+	                    url = '/login';
 	                    header.url = url;
 	                    header.method = 'POST';
 	                    header.contentType = "application/json";
@@ -193,6 +202,10 @@
 	                console.log(results.user.password);
 	                switch (route) {
 	                    case 'signup':
+	                        route = 'user';
+	                        auth = results.user;
+	                        break;
+	                    case 'update':
 	                        route = 'user';
 	                        auth = results.user;
 	                        break;
@@ -4425,13 +4438,15 @@
 	            // console.log(e.target.elements.email.value);
 	            // console.log(e.target.elements.city.value);
 	            // console.log(e.target.elements.state.value);
-	            var data, name, email, city, state;
+	            var data, id, name, email, city, state;
+	            id = this.props.auth._id;
 	            name = e.target.elements.name.value;
 	            email = e.target.elements.email.value;
 	            city = e.target.elements.city.value;
 	            state = e.target.elements.state.value;
 	            data = {
-	                route: 'user',
+	                route: 'update',
+	                id: id,
 	                name: name,
 	                email: email,
 	                city: city,

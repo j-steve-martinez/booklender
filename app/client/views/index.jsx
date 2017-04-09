@@ -20,9 +20,9 @@ import User from './user.jsx';
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
+        var auth = { _id: false, error: null };
         this.router = this.router.bind(this);
         this.ajax = this.ajax.bind(this);
-        var auth = { _id: false, error: null };
         this.state = { auth: auth, route: 'start' };
     }
     router(route) {
@@ -58,18 +58,27 @@ export default class Main extends React.Component {
         url = window.location.origin;
 
         switch (route) {
-            case 'user':
+            case 'signup':
                 console.log('route: user');
-                url = '/login' //+ encodeURIComponent('?email=' + data.email + '&' + 'password=' + data.pwd);
+                url = '/signup'
                 header.url = url;
                 header.method = 'POST';
                 header.contentType = "application/json";
                 header.dataType = 'json'
                 header.data = JSON.stringify(data);
                 break;
-            case 'signup':
+            case 'update':
                 console.log('route: user');
-                url = '/signup'
+                url = '/update'
+                header.url = url;
+                header.method = 'POST';
+                header.contentType = "application/json";
+                header.dataType = 'json'
+                header.data = JSON.stringify(data);
+                break;
+            case 'user':
+                console.log('route: user');
+                url = '/login';
                 header.url = url;
                 header.method = 'POST';
                 header.contentType = "application/json";
@@ -94,6 +103,10 @@ export default class Main extends React.Component {
                 console.log(results.user.password);
                 switch (route) {
                     case 'signup':
+                        route = 'user';
+                        auth = results.user;
+                        break;
+                    case 'update':
                         route = 'user';
                         auth = results.user;
                         break;

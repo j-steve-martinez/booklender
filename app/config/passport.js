@@ -50,7 +50,7 @@ module.exports = function (passport) {
 						console.log(data);
 						return done(null, data);
 					});
-				} 
+				}
 				else {
 					return done(null, false);
 				}

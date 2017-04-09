@@ -13,20 +13,22 @@ export default class Config extends React.Component {
         // console.log(e.target.elements.email.value);
         // console.log(e.target.elements.city.value);
         // console.log(e.target.elements.state.value);
-        var data, name, email, city, state;
+        var data, id, name, email, city, state;
+        id = this.props.auth._id;
         name = e.target.elements.name.value;
         email = e.target.elements.email.value;
         city = e.target.elements.city.value;
         state = e.target.elements.state.value;
         data = {
-            route: 'user',
+            route: 'update',
+            id: id,
             name: name,
             email: email,
             city: city,
             state: state
         };
         console.log(data);
-        this.props.ajax( data);
+        this.props.ajax(data);
 
     }
     render() {

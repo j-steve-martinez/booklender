@@ -7,8 +7,8 @@ function ClickHandler() {
 
 	this.addDefault = () => {
 		User.find({}, (err, user) => {
-			console.log('default user');
-			console.log(user);
+			// console.log('default user');
+			// console.log(user);
 			if (err) throw err;
 			if (user.length === 0) {
 				var defaultUser = new User({
@@ -17,12 +17,38 @@ function ClickHandler() {
 				});
 				defaultUser.save((err, data) => {
 					if (err) throw err;
-					console.log('default user saved!');
-					console.log(data);
+					// console.log('default user saved!');
+					// console.log(data);
 				});
 			}
 		});
 	}
+
+
+	this.update = (req, res) => {
+		console.log(req.body);
+		// var name, email, city, state;
+		User.findOneAndUpdate(
+			{
+				_id: req.body.id
+			},
+			{
+				$set:
+				{
+					name: req.body.name,
+					city: req.body.city,
+					state: req.body.state
+				}
+			},
+			{ new: true },
+			(err, user) => {
+				if (err) throw err;
+				console.log(user);
+				res.json({user: user});
+			}
+		);
+	}
+
 
 	this.getAllPolls = (req, res) => {
 		Poll.find().exec((err, data) => {

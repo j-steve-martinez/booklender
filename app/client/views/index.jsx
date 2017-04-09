@@ -38,10 +38,12 @@ export default class Main extends React.Component {
          *  logout
          */
         if (route === 'logout') {
-            var auth = false;
+            var auth = {_id: false, error: null};
             this.setState({ route: route, auth: auth });
         } else {
-            this.setState({ route: route });
+            var auth = this.state.auth;
+            auth.error = null;
+            this.setState({ route: route, auth: auth });
         }
     }
     ajax(data) {

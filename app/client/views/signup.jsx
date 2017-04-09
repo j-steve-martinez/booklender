@@ -34,9 +34,8 @@ export default class Signup extends React.Component {
             error = null;
         } else {
             error = (
-                <div className="form-group">
-                    <label htmlFor="error">Error:</label>
-                    <input type="text" className="form-control" id="error" value={message} readOnly />
+                <div className="panel panel-danger">
+                    <div className="panel-heading">Error: {message}</div>
                 </div>
             )
         }

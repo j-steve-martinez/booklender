@@ -128,10 +128,12 @@
 	             *  logout
 	             */
 	            if (route === 'logout') {
-	                var auth = false;
+	                var auth = { _id: false, error: null };
 	                this.setState({ route: route, auth: auth });
 	            } else {
-	                this.setState({ route: route });
+	                var auth = this.state.auth;
+	                auth.error = null;
+	                this.setState({ route: route, auth: auth });
 	            }
 	        }
 	    }, {
@@ -4857,13 +4859,13 @@
 	            } else {
 	                error = _react2.default.createElement(
 	                    'div',
-	                    { className: 'form-group' },
+	                    { className: 'panel panel-danger' },
 	                    _react2.default.createElement(
-	                        'label',
-	                        { htmlFor: 'error' },
-	                        'Error:'
-	                    ),
-	                    _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'error', value: message, readOnly: true })
+	                        'div',
+	                        { className: 'panel-heading' },
+	                        'Error: ',
+	                        message
+	                    )
 	                );
 	            }
 	            return _react2.default.createElement(

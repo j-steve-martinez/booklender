@@ -34,8 +34,11 @@ export default class Config extends React.Component {
     render() {
         console.log('Config');
         console.log(this.props);
-
-        var email = this.props.auth.email;
+        var name, email, city, state; 
+        name = this.props.auth.name;
+        email = this.props.auth.email;
+        city = this.props.auth.city;
+        state = this.props.auth.state;
 
         return (
             <div>
@@ -47,15 +50,15 @@ export default class Config extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="name">Name:</label>
-                        <input type="text" className="form-control" id="name" />
+                        <input type="text" className="form-control" id="name" defaultValue={name} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="city">City:</label>
-                        <input type="text" className="form-control" id="city" />
+                        <input type="text" className="form-control" id="city" defaultValue={city} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="state">State:</label>
-                        <input type="text" className="form-control" id="state" />
+                        <input type="text" className="form-control" id="state" defaultValue={state} />
                     </div>
                     <button type="submit" className="btn btn-default">Submit</button>
                 </form>

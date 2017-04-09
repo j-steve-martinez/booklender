@@ -4460,8 +4460,11 @@
 	        value: function render() {
 	            console.log('Config');
 	            console.log(this.props);
-
-	            var email = this.props.auth.email;
+	            var name, email, city, state;
+	            name = this.props.auth.name;
+	            email = this.props.auth.email;
+	            city = this.props.auth.city;
+	            state = this.props.auth.state;
 
 	            return _react2.default.createElement(
 	                'div',
@@ -4492,7 +4495,7 @@
 	                            { htmlFor: 'name' },
 	                            'Name:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name' })
+	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name', defaultValue: name })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -4502,7 +4505,7 @@
 	                            { htmlFor: 'city' },
 	                            'City:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'city' })
+	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'city', defaultValue: city })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -4512,7 +4515,7 @@
 	                            { htmlFor: 'state' },
 	                            'State:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'state' })
+	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'state', defaultValue: state })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',

@@ -2,6 +2,7 @@
 
 var User = require('../models/users.js');
 var Poll = require('../models/polls.js');
+var Book = require('../models/books.js');
 
 function ClickHandler() {
 
@@ -22,8 +23,28 @@ function ClickHandler() {
 				});
 			}
 		});
+		Book.find({}, (err, book) => {
+			console.log('default book');
+			console.log(book);
+			if (err) throw err;
+			if (book.length === 0) {
+				var defaultBook = new Book({
+					uid: "58e9587d0cc136250e0e3d08",
+					bid: "ZbBOAAAAMAAJ",
+					title: "Tarzan of the Apes",
+					thumbnail: "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+					isRequest: false,
+					isAccept: false,
+					lendee: ""
+				});
+				defaultBook.save((err, data) => {
+					if (err) throw err;
+					console.log('default book saved!');
+					console.log(data);
+				});
+			}
+		});
 	}
-
 
 	this.update = (req, res) => {
 		console.log(req.body);
@@ -44,16 +65,44 @@ function ClickHandler() {
 			(err, user) => {
 				if (err) throw err;
 				console.log(user);
-				res.json({user: user});
+				res.json({ user: user });
 			}
 		);
 	}
 
+	this.addBook = (req, res) => {
+		console.log('addBook');
+		console.log(req.body);
 
-	this.getAllPolls = (req, res) => {
-		Poll.find().exec((err, data) => {
+		// req.on('data', body => {
+		// 	console.log('addBook req.on data');
+		// 	var data = JSON.parse(body);
+		// 	console.log(data);
+		// 	res.end()
+		res.json({
+			_id: 'a1c2g3ghr4h5jeq6od7',
+			title: 'The Foobars',
+			isRequest: false,
+			isAccept: false,
+			lendee: ''
+		});
+		// });
+
+	}
+
+	this.getAllBooks = (req, res) => {
+		console.log('getAllBooks');
+		Books.find().exec((err, data) => {
 			if (err) throw err;
 			res.json(data);
+		});
+	}
+
+	this.requestBook = (req, res) => {
+		console.log('requestBook');
+		req.on('data', body => {
+			var data = JSON.parse(body);
+			console.log(data);
 		});
 	}
 

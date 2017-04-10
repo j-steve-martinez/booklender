@@ -12,8 +12,11 @@ var session = require('express-session');
 var sessionMongo = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(sessionMongo);
 var bodyParser = require('body-parser');
+var Primus = require('primus');
 
 var app = express();
+var server = require('http').createServer(app);
+var primus = new Primus(server);
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -61,9 +64,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-routes(app, passport);
+routes(app, passport, primus);
 
 var port = process.env.PORT || 8080;
-app.listen(port,  function () {
+server.listen(port,  function () {
 	console.log('Node.js listening on port ' + port + '...');
 });

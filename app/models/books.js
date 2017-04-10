@@ -5,11 +5,11 @@ var Schema = mongoose.Schema;
 
 var Book = new Schema({
     uid: String,
-    ownerId: String,
-    bookId: String,
+    bid: String,
     title: String,
     thumbnail: String,
-    isOnLoan: Boolean,
+    isRequest: Boolean,
+    isAccept: Boolean,
     lendee: String 
 });
 

@@ -57,6 +57,8 @@
 	    value: true
 	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _books = __webpack_require__(1);
@@ -106,9 +108,10 @@
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
-	        var auth = { _id: false, error: null };
+	        var auth = { _id: false, error: null, books: [] };
 	        _this.router = _this.router.bind(_this);
 	        _this.ajax = _this.ajax.bind(_this);
+	        // this.auth = this.auth.bind(auth);
 	        _this.state = { auth: auth, route: 'start' };
 	        return _this;
 	    }
@@ -147,19 +150,55 @@
 	             * Ajax to the server
 	             */
 	            var auth,
+	                book,
+	                books,
 	                url,
 	                URL,
 	                method,
 	                contentType,
 	                route,
+	                reroute,
 	                header = {};
 
+	            function parseAuth(data, book) {
+	                var auth, books, error, obj, id, name, email, city, state;
+	                console.log('parseAuth');
+	                console.log(data);
+	                // console.log(book);
+	                data._id ? id = data._id : id = false;
+	                data.name ? name = data.name : name = '';
+	                data.email ? email = data.email : email = '';
+	                data.city ? city = data.city : city = '';
+	                data.state ? state = data.state : state = '';
+	                data.error ? error = data.error : error = null;
+	                data.books ? books = data.books : books = [];
+
+	                obj = {
+	                    _id: id,
+	                    name: name,
+	                    email: email,
+	                    city: city,
+	                    state: state,
+	                    books: books,
+	                    error: error
+	                };
+
+	                if (books !== undefined) {
+	                    console.log('parseAuth adding new book');
+	                    obj.books.push(book);
+	                }
+	                // console.log('parseAuth obj');
+	                // console.log(obj);
+	                return obj;
+	            }
+
+	            books = this.state.auth.books;
 	            route = data.route;
 	            url = window.location.origin;
 
 	            switch (route) {
 	                case 'signup':
-	                    console.log('route: user');
+	                    console.log('route: signup');
 	                    url = '/signup';
 	                    header.url = url;
 	                    header.method = 'POST';
@@ -167,8 +206,17 @@
 	                    header.dataType = 'json';
 	                    header.data = JSON.stringify(data);
 	                    break;
+	                case 'title':
+	                    console.log('route: title');
+	                    url = '/api/books';
+	                    header.url = url;
+	                    header.method = 'POST';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
+	                    break;
 	                case 'update':
-	                    console.log('route: user');
+	                    console.log('route: update');
 	                    url = '/update';
 	                    header.url = url;
 	                    header.method = 'POST';
@@ -198,24 +246,42 @@
 	            $.ajax(header).then(function (results) {
 	                console.log('AJAX .then');
 	                console.log(results);
-	                console.log(results.user.email);
-	                console.log(results.user.password);
+	                console.log(route);
+	                // console.log(results.user.email);
+	                // console.log(results.user.password);
 	                switch (route) {
 	                    case 'signup':
-	                        route = 'user';
-	                        auth = results.user;
+	                        // console.log('signup .then');
+	                        reroute = 'user';
+	                        auth = parseAuth(results.user, null);
+	                        // console.log(auth);
 	                        break;
 	                    case 'update':
-	                        route = 'user';
-	                        auth = results.user;
+	                        // console.log('update .then');
+	                        reroute = 'user';
+	                        // console.log(results.user);
+	                        auth = parseAuth(results.user, null);
+	                        // console.log(auth);
+	                        break;
+	                    case 'title':
+	                        // console.log('title .then');
+	                        reroute = 'user';
+	                        book = results;
+	                        // console.log(this.state.auth);
+	                        auth = parseAuth(_this2.state.auth, book);
+	                        // console.log(auth);
 	                        break;
 	                    case 'user':
-	                        auth = results.user;
-	                    default:
-	                        break;
+	                        // console.log('user .then');
+	                        reroute = 'user';
+	                        auth = parseAuth(results.user, null);
+	                    // console.log(auth);
 	                }
-
-	                _this2.setState({ route: route, auth: auth });
+	                // console.log('reroute..........');
+	                // console.log(reroute);
+	                if (reroute !== undefined) {
+	                    _this2.setState({ route: reroute, auth: auth });
+	                }
 	            }).fail(function (err) {
 	                console.log('AJAX .fail');
 	                if (route === 'signup') {
@@ -233,6 +299,25 @@
 	            // var route, auth;
 	            // route = data.route;
 	            // auth = { id: '12345', email: 'foo@bar.com' }
+	        }
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var _this3 = this;
+
+	            /**
+	             * Set the primus handler
+	             */
+	            var primus = new Primus();
+	            primus.on('data', function (pData) {
+	                // console.log('primus pData');
+	                // console.log(pData);
+	                if ((typeof pData === 'undefined' ? 'undefined' : _typeof(pData)) === 'object') {
+	                    _this3.setState({ pData: pData });
+	                }
+	            });
+	            primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
+	            this.setState({ primus: primus });
 	        }
 	    }, {
 	        key: 'render',
@@ -254,7 +339,7 @@
 	                    page = React.createElement(_signup2.default, { ajax: this.ajax, auth: this.state.auth });
 	                    break;
 	                case 'user':
-	                    page = React.createElement(_user2.default, { ajax: this.ajax });
+	                    page = React.createElement(_user2.default, { ajax: this.ajax, auth: this.state.auth });
 	                    break;
 	                case 'books':
 	                    page = React.createElement(_books2.default, { ajax: this.ajax });
@@ -279,6 +364,52 @@
 
 
 	ReactDOM.render(React.createElement(Main, null), document.getElementById('content'));
+
+	var mockBook = {
+	    "kind": "books#volumes",
+	    "totalItems": 1750,
+	    "items": [{
+	        "kind": "books#volume",
+	        "id": "ZbBOAAAAMAAJ",
+	        "etag": "n7XvsUcaAGo",
+	        "selfLink": "https://www.googleapis.com/books/v1/volumes/ZbBOAAAAMAAJ",
+	        "volumeInfo": {
+	            "title": "Tarzan of the Apes",
+	            "authors": ["Edgar Rice Burroughs"],
+	            "publishedDate": "1914",
+	            "readingModes": {
+	                "text": true,
+	                "image": true
+	            },
+	            "maturityRating": "NOT_MATURE",
+	            "allowAnonLogging": false,
+	            "contentVersion": "1.1.2.0.full.3",
+	            "imageLinks": {
+	                "smallThumbnail": "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+	                "thumbnail": "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+	            },
+	            "previewLink": "http://books.google.com/books?id=ZbBOAAAAMAAJ&printsec=frontcover&dq=tarzan&hl=&as_pt=BOOKS&cd=1&source=gbs_api",
+	            "infoLink": "https://play.google.com/store/books/details?id=ZbBOAAAAMAAJ&source=gbs_api",
+	            "canonicalVolumeLink": "https://market.android.com/details?id=book-ZbBOAAAAMAAJ"
+	        },
+	        "saleInfo": {
+	            "country": "US",
+	            "buyLink": "https://play.google.com/store/books/details?id=ZbBOAAAAMAAJ&rdid=book-ZbBOAAAAMAAJ&rdot=1&source=gbs_api"
+	        },
+	        "accessInfo": {
+	            "country": "US",
+	            "epub": {
+	                "isAvailable": true,
+	                "downloadLink": "http://books.google.com/books/download/Tarzan_of_the_Apes.epub?id=ZbBOAAAAMAAJ&hl=&output=epub&source=gbs_api"
+	            },
+	            "pdf": {
+	                "isAvailable": true,
+	                "downloadLink": "http://books.google.com/books/download/Tarzan_of_the_Apes.pdf?id=ZbBOAAAAMAAJ&hl=&output=pdf&sig=ACfU3U3FEVwK2L30RIWfVZU16Rah8Y9HYQ&source=gbs_api"
+	            },
+	            "accessViewStatus": "FULL_PUBLIC_DOMAIN"
+	        }
+	    }]
+	};
 
 /***/ },
 /* 1 */
@@ -4536,13 +4667,11 @@
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -4574,18 +4703,18 @@
 	    }
 
 	    _createClass(Header, [{
-	        key: 'cH',
+	        key: "cH",
 	        value: function cH(e) {
-	            console.log('Header cH');
-	            console.log(e.target.id);
+	            // console.log('Header cH');
+	            // console.log(e.target.id);
 	            e.preventDefault();
 	            this.props.router(e.target.id);
 	        }
 	    }, {
-	        key: 'render',
+	        key: "render",
 	        value: function render() {
-	            console.log('header props');
-	            console.log(this.props);
+	            // console.log('header props');
+	            // console.log(this.props);
 	            /**
 	             * Login links should be:
 	             *  All Books
@@ -4594,100 +4723,100 @@
 	             *  Logout glyphicon
 	             */
 	            var logout = _react2.default.createElement(
-	                'ul',
-	                { className: 'nav navbar-nav navbar-right' },
+	                "ul",
+	                { className: "nav navbar-nav navbar-right" },
 	                _react2.default.createElement(
-	                    'li',
+	                    "li",
 	                    null,
 	                    _react2.default.createElement(
-	                        'a',
-	                        { id: 'books', onClick: this.cH, href: '#' },
-	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
-	                        ' All Books'
+	                        "a",
+	                        { id: "books", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-book" }),
+	                        " All Books"
 	                    )
 	                ),
 	                _react2.default.createElement(
-	                    'li',
+	                    "li",
 	                    null,
 	                    _react2.default.createElement(
-	                        'a',
-	                        { id: 'user', onClick: this.cH, href: '#' },
-	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-user' }),
-	                        ' My Books'
+	                        "a",
+	                        { id: "user", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-user" }),
+	                        " My Books"
 	                    )
 	                ),
 	                _react2.default.createElement(
-	                    'li',
+	                    "li",
 	                    null,
 	                    _react2.default.createElement(
-	                        'a',
-	                        { id: 'config', onClick: this.cH, href: '#' },
-	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-cog' }),
-	                        ' Configure'
+	                        "a",
+	                        { id: "config", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-cog" }),
+	                        " Configure"
 	                    )
 	                ),
 	                _react2.default.createElement(
-	                    'li',
+	                    "li",
 	                    null,
 	                    _react2.default.createElement(
-	                        'a',
-	                        { id: 'logout', onClick: this.cH, href: '#' },
-	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-log-out' }),
-	                        ' Logout'
+	                        "a",
+	                        { id: "logout", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-log-out" }),
+	                        " Logout"
 	                    )
 	                )
 	            );
 	            var login = _react2.default.createElement(
-	                'ul',
-	                { className: 'nav navbar-nav navbar-right' },
+	                "ul",
+	                { className: "nav navbar-nav navbar-right" },
 	                _react2.default.createElement(
-	                    'li',
+	                    "li",
 	                    null,
 	                    _react2.default.createElement(
-	                        'a',
-	                        { id: 'signup', onClick: this.cH, href: '#' },
-	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-user' }),
-	                        ' Sign Up'
+	                        "a",
+	                        { id: "signup", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-user" }),
+	                        " Sign Up"
 	                    )
 	                ),
 	                _react2.default.createElement(
-	                    'li',
+	                    "li",
 	                    null,
 	                    _react2.default.createElement(
-	                        'a',
-	                        { id: 'login', onClick: this.cH, href: '#' },
-	                        _react2.default.createElement('span', { className: 'glyphicon glyphicon-log-in' }),
-	                        ' Login'
+	                        "a",
+	                        { id: "login", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-log-in" }),
+	                        " Login"
 	                    )
 	                )
 	            );
 	            var navs,
 	                auth = this.props.auth;
-	            console.log('auth');
-	            console.log(auth);
-	            console.log('typeof auth._id');
-	            console.log(_typeof(auth._id));
+	            // console.log('auth');
+	            // console.log(auth);
+	            // console.log('typeof auth._id');
+	            // console.log(typeof auth._id);
 	            var myHeader;
 	            if (auth._id !== false) {
-	                console.log('is logged in');
+	                // console.log('is logged in');
 	                navs = logout;
 	            } else {
-	                console.log('not logged in');
+	                // console.log('not logged in');
 	                navs = login;
 	            }
 	            return _react2.default.createElement(
-	                'nav',
-	                { className: 'navbar navbar-inverse' },
+	                "nav",
+	                { className: "navbar navbar-inverse" },
 	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'container-fluid' },
+	                    "div",
+	                    { className: "container-fluid" },
 	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'navbar-header' },
+	                        "div",
+	                        { className: "navbar-header" },
 	                        _react2.default.createElement(
-	                            'a',
-	                            { id: 'start', onClick: this.cH, className: 'navbar-brand', href: '#' },
-	                            'Book Lender'
+	                            "a",
+	                            { id: "start", onClick: this.cH, className: "navbar-brand", href: "#" },
+	                            "Book Lender"
 	                        )
 	                    ),
 	                    navs
@@ -4741,7 +4870,7 @@
 	        key: 'submit',
 	        value: function submit(e) {
 	            e.preventDefault();
-	            console.log('login submit');
+	            // console.log('login submit');
 	            // console.log(e.target.elements);
 	            // console.log(e.target.elements.email.value);
 	            // console.log(e.target.elements.password.value);
@@ -4753,14 +4882,14 @@
 	                email: email,
 	                password: password
 	            };
-	            console.log(data);
+	            // console.log(data);
 	            this.props.ajax(data);
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log('Login');
-	            console.log(this.props);
+	            // console.log('Login');
+	            // console.log(this.props);
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -4937,7 +5066,7 @@
 /* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -4967,22 +5096,22 @@
 	    }
 
 	    _createClass(Start, [{
-	        key: 'render',
+	        key: "render",
 	        value: function render() {
-	            console.log('Start props');
-	            console.log(this.props);
+	            // console.log('Start props');
+	            // console.log(this.props);
 	            return _react2.default.createElement(
-	                'div',
-	                { className: 'jumbotron' },
+	                "div",
+	                { className: "jumbotron" },
 	                _react2.default.createElement(
-	                    'h1',
+	                    "h1",
 	                    null,
-	                    'Welcome'
+	                    "Welcome"
 	                ),
 	                _react2.default.createElement(
-	                    'h3',
+	                    "h3",
 	                    null,
-	                    'Please Login or Signup to start lending books.'
+	                    "Please Login or Signup to start lending books."
 	                )
 	            );
 	        }
@@ -5057,16 +5186,37 @@
 	        value: function render() {
 	            console.log('User');
 	            console.log(this.props);
-	            var lending, borrow;
+	            var lending, borrow, name, email, city, state;
 	            lending = 2;
 	            borrow = 3;
+
+	            this.props.auth.name ? name = this.props.auth.name : name = null;
+	            this.props.auth.email ? email = this.props.auth.email : email = null;
+	            this.props.auth.city ? city = 'City: ' + this.props.auth.city : city = null;
+	            this.props.auth.state ? state = 'State: ' + this.props.auth.state : state = null;
+
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    name
+	                ),
+	                _react2.default.createElement(
 	                    'h2',
 	                    null,
-	                    'Username Mockup'
+	                    email
+	                ),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    city
+	                ),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    state
 	                ),
 	                _react2.default.createElement(
 	                    'button',
@@ -5088,6 +5238,7 @@
 	                        lending
 	                    )
 	                ),
+	                _react2.default.createElement('br', null),
 	                _react2.default.createElement(
 	                    'div',
 	                    null,

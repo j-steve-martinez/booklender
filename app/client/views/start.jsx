@@ -5,8 +5,8 @@ export default class Start extends React.Component {
         super(props);
     }
     render() {
-        console.log('Start props');
-        console.log(this.props);
+        // console.log('Start props');
+        // console.log(this.props);
         return (
             <div className="jumbotron" >
                 <h1>Welcome</h1>

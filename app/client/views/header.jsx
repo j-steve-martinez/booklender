@@ -8,14 +8,14 @@ export default class Header extends React.Component {
         this.cH = this.cH.bind(this);
     }
     cH(e){
-        console.log('Header cH');
-        console.log(e.target.id);
+        // console.log('Header cH');
+        // console.log(e.target.id);
         e.preventDefault();
         this.props.router(e.target.id);
     }
     render() {
-        console.log('header props');
-        console.log(this.props);
+        // console.log('header props');
+        // console.log(this.props);
         /**
          * Login links should be:
          *  All Books
@@ -38,16 +38,16 @@ export default class Header extends React.Component {
             </ul>
         );
         var navs, auth = this.props.auth;
-        console.log('auth');
-        console.log(auth);
-        console.log('typeof auth._id');
-        console.log(typeof auth._id);
+        // console.log('auth');
+        // console.log(auth);
+        // console.log('typeof auth._id');
+        // console.log(typeof auth._id);
         var myHeader;
         if (auth._id !== false) {
-            console.log('is logged in');
+            // console.log('is logged in');
             navs = logout;
         } else {
-            console.log('not logged in');
+            // console.log('not logged in');
             navs = login;
         }
         return (

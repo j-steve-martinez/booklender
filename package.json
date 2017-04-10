@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
-    "start:dev": "nodemon server.js",
+    "start:dev": "nodemon --delay 3 --ignore public/js/primus.js",
     "start:prod": "node server.js",
     "build": "webpack -w"
   },
@@ -39,8 +39,10 @@
     "passport-github": "1.1.0",
     "passport-local": "1.0.0",
     "passport-twitter": "1.0.4",
+    "primus": "7.0.0",
     "react": "15.4.2",
-    "react-dom": "15.4.2"
+    "react-dom": "15.4.2",
+    "ws": "2.2.3"
   },
   "devDependencies": {
     "babel-core": "6.21.0",

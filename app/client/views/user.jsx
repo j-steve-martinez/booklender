@@ -27,18 +27,28 @@ export default class User extends React.Component {
     render() {
         console.log('User');
         console.log(this.props);
-        var lending, borrow;
+        var lending, borrow, name, email, city, state;
         lending = 2;
         borrow = 3;
+
+        this.props.auth.name ? name = this.props.auth.name : name = null;
+        this.props.auth.email ? email = this.props.auth.email : email = null;
+        this.props.auth.city ? city = 'City: ' + this.props.auth.city : city = null;
+        this.props.auth.state ? state = 'State: ' + this.props.auth.state : state = null;
+
         return (
             <div className="jumbotron" >
-                <h2>Username Mockup</h2>
+                <h1>{name}</h1>
+                <h2>{email}</h2>
+                <h3>{city}</h3>
+                <h3>{state}</h3>
                 <button className="btn btn-primary" type="button">
                     Borrowed <span className="badge">{borrow}</span>
                 </button>
                 <button className="btn btn-primary" type="button">
                     Lending <span className="badge">{lending}</span>
                 </button>
+                <br />
                 <div>
                     <form onSubmit={this.submit} >
                         <div className="form-group">

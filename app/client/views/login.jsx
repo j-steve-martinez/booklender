@@ -7,7 +7,7 @@ export default class Login extends React.Component {
     }
     submit(e) {
         e.preventDefault();
-        console.log('login submit');
+        // console.log('login submit');
         // console.log(e.target.elements);
         // console.log(e.target.elements.email.value);
         // console.log(e.target.elements.password.value);
@@ -19,13 +19,13 @@ export default class Login extends React.Component {
             email: email,
             password: password,
         };
-        console.log(data);
+        // console.log(data);
         this.props.ajax(data);
 
     }
     render() {
-        console.log('Login');
-        console.log(this.props);
+        // console.log('Login');
+        // console.log(this.props);
         return (
             <div>
                 <h1>Login</h1>

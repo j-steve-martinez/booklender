@@ -1,10 +1,10 @@
 'use strict';
-
+// https://www.googleapis.com/books/v1/volumes?q=tarzan&maxResults=1&printType=books&projection=lite
 var path = process.cwd();
 var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
 var index = path + '/public/index.html';
 
-module.exports = function (app, passport) {
+module.exports = function (app, passport, primus) {
 
 	function isLoggedIn(req, res, next) {
 		console.log('starting isAuthenticated');
@@ -28,56 +28,6 @@ module.exports = function (app, passport) {
 			// console.log(req.params);
 			res.sendFile(index);
 		});
-
-
-
-	// app.route('/login')
-	// 	.get(function (req, res) {
-	// 		res.sendFile(path + '/public/login.html');
-	// 	});
-
-	// app.route('/logout')
-	// 	.get(function (req, res) {
-	// 		req.logout();
-	// 		res.redirect('/');
-	// 	});
-
-	// get and take a poll
-	// app.route('/api/poll/:id')
-	// 	.get(clickHandler.getPoll)
-	// 	.put(clickHandler.takePoll)
-
-	// get all polls
-	// app.route('/api/allPolls')
-	// 	.get(clickHandler.getAllPolls)
-
-	// get user info
-	// app.route('/api/:id')
-	// 	.get(isLoggedIn, function (req, res) {
-	// 		res.json(req.user)
-	// 	});
-
-	// app.route('/auth/github')
-	// 	.get(passport.authenticate('github'));
-
-	// app.route('/auth/github/callback')
-	// 	.get(passport.authenticate('github', {
-	// 		successRedirect: '/',
-	// 		failureRedirect: '/'
-	// 	}));
-
-	// app.route('/auth/twitter')
-	// 	.get(passport.authenticate('twitter'));
-
-	// app.route('/auth/twitter/callback')
-	// 	.get(passport.authenticate('twitter', {
-	// 		successRedirect: '/',
-	// 		failureRedirect: '/'
-	// 	}));
-
-	// app.route('/signup')
-	// .post(passport.authenticate('local'));
-
 
 	app.route('/signup')
 		.post((req, res, next) => {
@@ -106,11 +56,7 @@ module.exports = function (app, passport) {
 				});
 
 			})(req, res, next);
-		})
-	// .get(isLoggedIn, (req, res) => {
-	// 	console.log('signup .get()');
-	// });
-
+		});
 
 	app.route('/login')
 		.post((req, res, next) => {
@@ -138,20 +84,43 @@ module.exports = function (app, passport) {
 			})(req, res, next);
 		})
 
-	// .get(isLoggedIn, (req, res) => {
-	// 	console.log('login get');
-	// 	// res.json({status: 'ok'});
-	// 	res.end();
-	// });
-
-	// app.route('/auth/local/callback')
-	// 	.get(passport.authenticate('local', {
-	// 		successRedirect: '/',
-	// 		failureRedirect: '/'
-	// 	}));
-
 	app.route('/update')
 		.post(isLoggedIn, clickHandler.update)
+
+	// console.log(primus);
+	primus.on('connection', function connection(spark) {
+		// console.log('new connection ' + spark.id);
+		// primus.write('data');
+
+		/**
+		 * Wait for all data to be received from the client
+		 */
+		spark.on('data', function received(data) {
+			var sourceId = spark.id;
+			if (typeof data === 'object') {
+				console.log(spark.id, 'received data:');
+				console.log(typeof data);
+				console.log(data);
+				/**
+				 * Send the message to all clients
+				 */
+				primus.forEach(function (spark, id, connections) {
+
+					if (sourceId !== spark.id) {
+						console.log('sending ' + data + ' to ' + spark.id);
+
+						spark.write(data);
+					}
+
+				});
+			}
+		});
+	});
+
+	app.route('/api/books')
+		.get(isLoggedIn, clickHandler.getAllBooks)
+		.post(isLoggedIn, clickHandler.addBook)
+		.put(isLoggedIn, clickHandler.requestBook)
 
 	// add, get, edit, delete the user poll data
 	// must be authenticated

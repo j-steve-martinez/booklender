@@ -7,8 +7,8 @@ export default class User extends React.Component {
         this.submit = this.submit.bind(this);
     }
     clickHandler(path) {
-        console.log('User clickHandler');
-        console.log(path);
+        // console.log('User clickHandler');
+        // console.log(path);
     }
     submit(e) {
         e.preventDefault();
@@ -21,12 +21,12 @@ export default class User extends React.Component {
             route: 'title',
             title: title,
         };
-        console.log(data);
+        // console.log(data);
         this.props.ajax(data);
     }
     render() {
-        console.log('User');
-        console.log(this.props);
+        // console.log('User');
+        // console.log(this.props);
         var lending, borrow, name, email, city, state;
         lending = 2;
         borrow = 3;

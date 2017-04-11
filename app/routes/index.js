@@ -7,21 +7,22 @@ var index = path + '/public/index.html';
 module.exports = function (app, passport, primus) {
 
 	function isLoggedIn(req, res, next) {
-		console.log('starting isAuthenticated');
-		console.log('req.session');
-		console.log(req.session);
+		// console.log('starting isAuthenticated');
+		// console.log('req.session');
+		// console.log(req.session);
 		if (req.isAuthenticated()) {
-			console.log('isAuthenticated true');
+			// console.log('isAuthenticated true');
 			return next();
 		} else {
-			console.log('isAuthenticated false');
-			console.log(req.url);
+			// console.log('isAuthenticated false');
+			// console.log(req.url);
 			res.json({ id: false });
 		}
 	}
 
 	var clickHandler = new ClickHandler();
 	clickHandler.addDefault();
+	// clickHandler.googleBook('Tarzan');
 
 	app.route('/')
 		.get(function (req, res) {
@@ -120,7 +121,8 @@ module.exports = function (app, passport, primus) {
 	app.route('/api/books')
 		.get(isLoggedIn, clickHandler.getAllBooks)
 		.post(isLoggedIn, clickHandler.addBook)
-		.put(isLoggedIn, clickHandler.requestBook)
+		// .put(isLoggedIn, clickHandler.googleBook)
+		// .post(isLoggedIn, clickHandler.requestBook)
 
 	// add, get, edit, delete the user poll data
 	// must be authenticated

@@ -20,11 +20,11 @@ import User from './user.jsx';
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
-        var auth = { _id: false, error: null, books: [] };
+        var auth = { _id: false, error: null };
         this.router = this.router.bind(this);
         this.ajax = this.ajax.bind(this);
         // this.auth = this.auth.bind(auth);
-        this.state = { auth: auth, route: 'start' };
+        this.state = { auth: auth, route: 'start', books: [] };
     }
     router(route) {
         console.log('main router');
@@ -48,17 +48,20 @@ export default class Main extends React.Component {
         }
     }
     ajax(data) {
-        console.log('main ajax');
-        console.log(data);
+        // console.log('main ajax');
+        // console.log(data);
         /**
          * Ajax to the server
          */
-        var auth, book, books, url, URL, method, contentType, route, reroute, header = {};
-
-        function parseAuth(data, book) {
+        var auth, book, books, url, URL, method, primus, contentType, route, reroute, header = {}, state = {};
+        if (data.primus) {
+            state.primus = data.primus;
+            delete data.primus;
+        }
+        function parseAuth(data) {
             var auth, books, error, obj, id, name, email, city, state;
-            console.log('parseAuth');
-            console.log(data);
+            // console.log('parseAuth');
+            // console.log(data);
             // console.log(book);
             data._id ? id = data._id : id = false;
             data.name ? name = data.name : name = '';
@@ -66,7 +69,7 @@ export default class Main extends React.Component {
             data.city ? city = data.city : city = '';
             data.state ? state = data.state : state = '';
             data.error ? error = data.error : error = null;
-            data.books ? books = data.books : books = [];
+            // data.books ? books = data.books : books = [];
 
             obj = {
                 _id: id,
@@ -74,26 +77,26 @@ export default class Main extends React.Component {
                 email: email,
                 city: city,
                 state: state,
-                books: books,
+                // books: books,
                 error: error
             }
 
-            if (books !== undefined) {
-                console.log('parseAuth adding new book');
-                obj.books.push(book);
-            }
+            // if (books !== undefined) {
+            //     console.log('parseAuth adding new book');
+            //     obj.books.push(book);
+            // }
             // console.log('parseAuth obj');
             // console.log(obj);
             return obj;
         }
 
-        books = this.state.auth.books
+        books = this.state.books
         route = data.route;
         url = window.location.origin;
 
         switch (route) {
             case 'signup':
-                console.log('route: signup');
+                // console.log('route: signup');
                 url = '/signup'
                 header.url = url;
                 header.method = 'POST';
@@ -101,8 +104,17 @@ export default class Main extends React.Component {
                 header.dataType = 'json'
                 header.data = JSON.stringify(data);
                 break;
+            case 'titles':
+                // console.log('route: titles');
+                url = '/api/books'
+                header.url = url;
+                header.method = 'GET';
+                header.contentType = "application/json";
+                header.dataType = 'json'
+                header.data = JSON.stringify(data);
+                break;
             case 'title':
-                console.log('route: title');
+                // console.log('route: title');
                 url = '/api/books'
                 header.url = url;
                 header.method = 'POST';
@@ -111,7 +123,7 @@ export default class Main extends React.Component {
                 header.data = JSON.stringify(data);
                 break;
             case 'update':
-                console.log('route: update');
+                // console.log('route: update');
                 url = '/update'
                 header.url = url;
                 header.method = 'POST';
@@ -120,7 +132,7 @@ export default class Main extends React.Component {
                 header.data = JSON.stringify(data);
                 break;
             case 'user':
-                console.log('route: user');
+                // console.log('route: user');
                 url = '/login';
                 header.url = url;
                 header.method = 'POST';
@@ -132,17 +144,17 @@ export default class Main extends React.Component {
                 break;
         }
 
-        console.log('ajax header');
-        console.log(header);
+        // console.log('ajax header');
+        // console.log(header);
 
         /**
          * Get data from server
          */
         $.ajax(header)
             .then(results => {
-                console.log('AJAX .then');
-                console.log(results);
-                console.log(route);
+                // console.log('AJAX .then');
+                // console.log(results);
+                // console.log(route);
                 // console.log(results.user.email);
                 // console.log(results.user.password);
                 switch (route) {
@@ -164,28 +176,46 @@ export default class Main extends React.Component {
                         reroute = 'user';
                         book = results;
                         // console.log(this.state.auth);
-                        auth = parseAuth(this.state.auth, book)
+                        // console.log(book);
+
+                        books.push(book);
+                        auth = parseAuth(this.state.auth)
+                        // console.log(auth);
+                        break;
+                    case 'titles':
+                        // console.log('title .then');
+                        reroute = 'start';
+                        books = results;
+                        // console.log(this.state.auth);
+                        // console.log(books);
+                        // books.push(book);
+                        auth = parseAuth(this.state.auth)
                         // console.log(auth);
                         break;
                     case 'user':
                         // console.log('user .then');
                         reroute = 'user';
                         auth = parseAuth(results.user, null);
-                        // console.log(auth);
+                    // console.log(auth);
                 }
                 // console.log('reroute..........');
                 // console.log(reroute);
+
+                state.route = reroute;
+                state.auth = auth;
+                state.books = books;
+
                 if (reroute !== undefined) {
-                    this.setState({ route: reroute, auth: auth });
+                    this.setState(state);
                 }
             })
             .fail(err => {
-                console.log('AJAX .fail');
+                // console.log('AJAX .fail');
                 if (route === 'signup') {
-                    console.log(JSON.parse(err.responseText));
+                    // console.log(JSON.parse(err.responseText));
                     var auth = this.state.auth;
                     auth.error = JSON.parse(err.responseText).error;
-                    console.log(auth);
+                    // console.log(auth);
                     this.setState({ route: route, auth: auth });
 
                 }
@@ -211,8 +241,13 @@ export default class Main extends React.Component {
                 this.setState({ pData: pData })
             }
         });
-        primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
-        this.setState({ primus: primus });
+        // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
+        var data = {
+            route: 'titles',
+            primus: primus
+        }
+        this.ajax(data)
+        // this.setState({ primus: primus });
     }
     render() {
         console.log('Main render');
@@ -232,10 +267,10 @@ export default class Main extends React.Component {
                 page = <Signup ajax={this.ajax} auth={this.state.auth} />
                 break;
             case 'user':
-                page = <User ajax={this.ajax} auth={this.state.auth} />
+                page = <User ajax={this.ajax} auth={this.state.auth} books={this.state.books} />
                 break;
             case 'books':
-                page = <Books ajax={this.ajax} />
+                page = <Books ajax={this.ajax} books={this.state.books} />
                 break;
             default:
                 page = <Start />

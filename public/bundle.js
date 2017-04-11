@@ -108,11 +108,11 @@
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
-	        var auth = { _id: false, error: null, books: [] };
+	        var auth = { _id: false, error: null };
 	        _this.router = _this.router.bind(_this);
 	        _this.ajax = _this.ajax.bind(_this);
 	        // this.auth = this.auth.bind(auth);
-	        _this.state = { auth: auth, route: 'start' };
+	        _this.state = { auth: auth, route: 'start', books: [] };
 	        return _this;
 	    }
 
@@ -144,8 +144,8 @@
 	        value: function ajax(data) {
 	            var _this2 = this;
 
-	            console.log('main ajax');
-	            console.log(data);
+	            // console.log('main ajax');
+	            // console.log(data);
 	            /**
 	             * Ajax to the server
 	             */
@@ -155,15 +155,20 @@
 	                url,
 	                URL,
 	                method,
+	                primus,
 	                contentType,
 	                route,
 	                reroute,
-	                header = {};
-
-	            function parseAuth(data, book) {
+	                header = {},
+	                state = {};
+	            if (data.primus) {
+	                state.primus = data.primus;
+	                delete data.primus;
+	            }
+	            function parseAuth(data) {
 	                var auth, books, error, obj, id, name, email, city, state;
-	                console.log('parseAuth');
-	                console.log(data);
+	                // console.log('parseAuth');
+	                // console.log(data);
 	                // console.log(book);
 	                data._id ? id = data._id : id = false;
 	                data.name ? name = data.name : name = '';
@@ -171,7 +176,7 @@
 	                data.city ? city = data.city : city = '';
 	                data.state ? state = data.state : state = '';
 	                data.error ? error = data.error : error = null;
-	                data.books ? books = data.books : books = [];
+	                // data.books ? books = data.books : books = [];
 
 	                obj = {
 	                    _id: id,
@@ -179,26 +184,26 @@
 	                    email: email,
 	                    city: city,
 	                    state: state,
-	                    books: books,
+	                    // books: books,
 	                    error: error
 	                };
 
-	                if (books !== undefined) {
-	                    console.log('parseAuth adding new book');
-	                    obj.books.push(book);
-	                }
+	                // if (books !== undefined) {
+	                //     console.log('parseAuth adding new book');
+	                //     obj.books.push(book);
+	                // }
 	                // console.log('parseAuth obj');
 	                // console.log(obj);
 	                return obj;
 	            }
 
-	            books = this.state.auth.books;
+	            books = this.state.books;
 	            route = data.route;
 	            url = window.location.origin;
 
 	            switch (route) {
 	                case 'signup':
-	                    console.log('route: signup');
+	                    // console.log('route: signup');
 	                    url = '/signup';
 	                    header.url = url;
 	                    header.method = 'POST';
@@ -206,8 +211,17 @@
 	                    header.dataType = 'json';
 	                    header.data = JSON.stringify(data);
 	                    break;
+	                case 'titles':
+	                    // console.log('route: titles');
+	                    url = '/api/books';
+	                    header.url = url;
+	                    header.method = 'GET';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
+	                    break;
 	                case 'title':
-	                    console.log('route: title');
+	                    // console.log('route: title');
 	                    url = '/api/books';
 	                    header.url = url;
 	                    header.method = 'POST';
@@ -216,7 +230,7 @@
 	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'update':
-	                    console.log('route: update');
+	                    // console.log('route: update');
 	                    url = '/update';
 	                    header.url = url;
 	                    header.method = 'POST';
@@ -225,7 +239,7 @@
 	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'user':
-	                    console.log('route: user');
+	                    // console.log('route: user');
 	                    url = '/login';
 	                    header.url = url;
 	                    header.method = 'POST';
@@ -237,16 +251,16 @@
 	                    break;
 	            }
 
-	            console.log('ajax header');
-	            console.log(header);
+	            // console.log('ajax header');
+	            // console.log(header);
 
 	            /**
 	             * Get data from server
 	             */
 	            $.ajax(header).then(function (results) {
-	                console.log('AJAX .then');
-	                console.log(results);
-	                console.log(route);
+	                // console.log('AJAX .then');
+	                // console.log(results);
+	                // console.log(route);
 	                // console.log(results.user.email);
 	                // console.log(results.user.password);
 	                switch (route) {
@@ -268,7 +282,20 @@
 	                        reroute = 'user';
 	                        book = results;
 	                        // console.log(this.state.auth);
-	                        auth = parseAuth(_this2.state.auth, book);
+	                        // console.log(book);
+
+	                        books.push(book);
+	                        auth = parseAuth(_this2.state.auth);
+	                        // console.log(auth);
+	                        break;
+	                    case 'titles':
+	                        // console.log('title .then');
+	                        reroute = 'start';
+	                        books = results;
+	                        // console.log(this.state.auth);
+	                        // console.log(books);
+	                        // books.push(book);
+	                        auth = parseAuth(_this2.state.auth);
 	                        // console.log(auth);
 	                        break;
 	                    case 'user':
@@ -279,16 +306,21 @@
 	                }
 	                // console.log('reroute..........');
 	                // console.log(reroute);
+
+	                state.route = reroute;
+	                state.auth = auth;
+	                state.books = books;
+
 	                if (reroute !== undefined) {
-	                    _this2.setState({ route: reroute, auth: auth });
+	                    _this2.setState(state);
 	                }
 	            }).fail(function (err) {
-	                console.log('AJAX .fail');
+	                // console.log('AJAX .fail');
 	                if (route === 'signup') {
-	                    console.log(JSON.parse(err.responseText));
+	                    // console.log(JSON.parse(err.responseText));
 	                    var auth = _this2.state.auth;
 	                    auth.error = JSON.parse(err.responseText).error;
-	                    console.log(auth);
+	                    // console.log(auth);
 	                    _this2.setState({ route: route, auth: auth });
 	                }
 	            });
@@ -316,8 +348,13 @@
 	                    _this3.setState({ pData: pData });
 	                }
 	            });
-	            primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
-	            this.setState({ primus: primus });
+	            // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
+	            var data = {
+	                route: 'titles',
+	                primus: primus
+	            };
+	            this.ajax(data);
+	            // this.setState({ primus: primus });
 	        }
 	    }, {
 	        key: 'render',
@@ -339,10 +376,10 @@
 	                    page = React.createElement(_signup2.default, { ajax: this.ajax, auth: this.state.auth });
 	                    break;
 	                case 'user':
-	                    page = React.createElement(_user2.default, { ajax: this.ajax, auth: this.state.auth });
+	                    page = React.createElement(_user2.default, { ajax: this.ajax, auth: this.state.auth, books: this.state.books });
 	                    break;
 	                case 'books':
-	                    page = React.createElement(_books2.default, { ajax: this.ajax });
+	                    page = React.createElement(_books2.default, { ajax: this.ajax, books: this.state.books });
 	                    break;
 	                default:
 	                    page = React.createElement(_start2.default, null);
@@ -449,6 +486,7 @@
 	        value: function render() {
 	            console.log('Books props');
 	            console.log(this.props);
+
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'jumbotron' },
@@ -457,6 +495,9 @@
 	                    null,
 	                    'Available Books'
 	                ),
+	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
+	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
+	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
 	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
 	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
 	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' })
@@ -5162,8 +5203,8 @@
 	    _createClass(User, [{
 	        key: 'clickHandler',
 	        value: function clickHandler(path) {
-	            console.log('User clickHandler');
-	            console.log(path);
+	            // console.log('User clickHandler');
+	            // console.log(path);
 	        }
 	    }, {
 	        key: 'submit',
@@ -5178,14 +5219,14 @@
 	                route: 'title',
 	                title: title
 	            };
-	            console.log(data);
+	            // console.log(data);
 	            this.props.ajax(data);
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log('User');
-	            console.log(this.props);
+	            // console.log('User');
+	            // console.log(this.props);
 	            var lending, borrow, name, email, city, state;
 	            lending = 2;
 	            borrow = 3;

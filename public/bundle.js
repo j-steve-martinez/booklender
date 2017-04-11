@@ -108,11 +108,24 @@
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
-	        var auth = { _id: false, error: null };
 	        _this.router = _this.router.bind(_this);
 	        _this.ajax = _this.ajax.bind(_this);
-	        // this.auth = this.auth.bind(auth);
-	        _this.state = { auth: auth, route: 'start', books: [] };
+	        var auth = { _id: false, error: null };
+	        _this.state = { auth: auth, books: [] };
+
+	        /**
+	         * Mock auth for testing
+	         */
+	        // var auth = {
+	        //     _id: '58eade61872e5725d487094c',
+	        //     email: 'abc@cba.com',
+	        //     name: 'poo',
+	        //     city: '',
+	        //     state: '',
+	        //     error: null
+	        // };
+	        // this.state = { auth: auth, books: [] };
+
 	        return _this;
 	    }
 
@@ -211,6 +224,15 @@
 	                    header.dataType = 'json';
 	                    header.data = JSON.stringify(data);
 	                    break;
+	                case 'borrow':
+	                    // console.log('route: titles');
+	                    url = '/api/books';
+	                    header.url = url;
+	                    header.method = 'PUT';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
+	                    break;
 	                case 'titles':
 	                    // console.log('route: titles');
 	                    url = '/api/books';
@@ -258,8 +280,8 @@
 	             * Get data from server
 	             */
 	            $.ajax(header).then(function (results) {
-	                // console.log('AJAX .then');
-	                // console.log(results);
+	                console.log('AJAX .then');
+	                console.log(results);
 	                // console.log(route);
 	                // console.log(results.user.email);
 	                // console.log(results.user.password);
@@ -276,6 +298,22 @@
 	                        // console.log(results.user);
 	                        auth = parseAuth(results.user, null);
 	                        // console.log(auth);
+	                        break;
+	                    case 'borrow':
+	                        console.log('borrow .then');
+	                        reroute = 'user';
+	                        book = results;
+	                        console.log(book);
+	                        books = _this2.state.books;
+	                        books.forEach(function (obj) {
+	                            if (obj._id === book._id) {
+	                                obj.isAccept = book.isAccept;
+	                                obj.isRequest = book.isRequest;
+	                                obj.lendee = book.lendee;
+	                            }
+	                        });
+	                        console.log(books);
+	                        auth = parseAuth(_this2.state.auth);
 	                        break;
 	                    case 'title':
 	                        // console.log('title .then');
@@ -379,7 +417,7 @@
 	                    page = React.createElement(_user2.default, { ajax: this.ajax, auth: this.state.auth, books: this.state.books });
 	                    break;
 	                case 'books':
-	                    page = React.createElement(_books2.default, { ajax: this.ajax, books: this.state.books });
+	                    page = React.createElement(_books2.default, { ajax: this.ajax, auth: this.state.auth, books: this.state.books });
 	                    break;
 	                default:
 	                    page = React.createElement(_start2.default, null);
@@ -478,15 +516,111 @@
 	    function Books(props) {
 	        _classCallCheck(this, Books);
 
-	        return _possibleConstructorReturn(this, (Books.__proto__ || Object.getPrototypeOf(Books)).call(this, props));
+	        var _this = _possibleConstructorReturn(this, (Books.__proto__ || Object.getPrototypeOf(Books)).call(this, props));
+
+	        _this.onClick = _this.onClick.bind(_this);
+	        _this.onConfirm = _this.onConfirm.bind(_this);
+	        var data = {
+	            isConfirm: false,
+	            book: {}
+	        };
+	        _this.state = data;
+	        return _this;
 	    }
 
 	    _createClass(Books, [{
+	        key: 'onClick',
+	        value: function onClick(e) {
+	            // e.preventDefault();
+	            // console.log(e.target);
+	            console.log(e.target.id);
+	            var uid, book;
+	            book = this.props.books.filter(function (obj) {
+	                return obj.bid === e.target.id;
+	            })[0];
+	            console.log(book);
+	            var data = {
+	                isConfirm: true,
+	                book: book
+	            };
+	            this.setState(data);
+	        }
+	    }, {
+	        key: 'onConfirm',
+	        value: function onConfirm(e) {
+	            // e.preventDefault();
+	            console.log(e.target.id);
+	            if (e.target.id === 'yes') {
+	                var data = this.state;
+	                delete data.isConfirm;
+	                data.route = 'borrow';
+	                data.book.isRequest = true;
+	                data.book.lendee = this.props.auth._id;
+	                console.log(data);
+	                this.props.ajax(data);
+	            } else {
+	                var data = {
+	                    isConfirm: false,
+	                    book: {}
+	                };
+	                this.setState(data);
+	            }
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            console.log('Books props');
 	            console.log(this.props);
-
+	            console.log(this.state);
+	            var books, confirm;
+	            books = this.props.books
+	            /**
+	             * Filter out books that have been requested
+	             */
+	            .filter(function (obj, key) {
+	                return obj.isRequest === false && obj.uid !== _this2.props.auth._id;
+	            }).map(function (obj, key) {
+	                // console.log(key);
+	                // console.log(obj._id);
+	                var tmp = _react2.default.createElement(
+	                    'a',
+	                    { key: key, onClick: _this2.onClick, href: '#' },
+	                    _react2.default.createElement('img', { id: obj.bid, src: obj.thumbnail, alt: obj.title, height: '180', width: '128' })
+	                );
+	                return tmp;
+	            });
+	            // console.log(books);
+	            if (this.state.isConfirm) {
+	                confirm = _react2.default.createElement(
+	                    'div',
+	                    { className: 'panel panel-warning' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'panel-heading' },
+	                        'Borrow: ',
+	                        this.state.book.title,
+	                        '?'
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'panel-footer' },
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: this.onConfirm, id: 'yes', className: 'btn btn-success' },
+	                            'YES'
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: this.onConfirm, id: 'no', className: 'btn btn-danger' },
+	                            'NO'
+	                        )
+	                    )
+	                );
+	            } else {
+	                confirm = null;
+	            }
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'jumbotron' },
@@ -495,12 +629,8 @@
 	                    null,
 	                    'Available Books'
 	                ),
-	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
-	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
-	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
-	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
-	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' }),
-	                _react2.default.createElement('span', { className: 'glyphicon glyphicon-book' })
+	                confirm,
+	                books
 	            );
 	        }
 	    }]);

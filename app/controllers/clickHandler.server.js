@@ -4,8 +4,6 @@ var Books = require('google-books-search');
 var User = require('../models/users.js');
 var Poll = require('../models/polls.js');
 var Book = require('../models/books.js');
-// var Promise = require('bluebird');
-
 
 function ClickHandler() {
 
@@ -130,6 +128,31 @@ function ClickHandler() {
 		});
 
 
+	}
+
+	this.editBook = (req, res) => {
+		// console.log(req.body);
+		var book = req.body.book;
+		// console.log(book);
+		Book.findOneAndUpdate(
+			{
+				_id: book._id
+			},
+			{
+				$set:
+				{
+					isAccept: book.isAccept,
+					isRequest: book.isRequest,
+					lendee: book.lendee
+				}
+			},
+			{ new: true },
+			(err, book) => {
+				if (err) throw err;
+				// console.log(book);
+				res.json(book);
+			}
+		);
 	}
 
 	this.getAllBooks = (req, res) => {

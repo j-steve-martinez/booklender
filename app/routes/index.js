@@ -121,6 +121,7 @@ module.exports = function (app, passport, primus) {
 	app.route('/api/books')
 		.get(isLoggedIn, clickHandler.getAllBooks)
 		.post(isLoggedIn, clickHandler.addBook)
+		.put(isLoggedIn, clickHandler.editBook)
 		// .put(isLoggedIn, clickHandler.googleBook)
 		// .post(isLoggedIn, clickHandler.requestBook)
 

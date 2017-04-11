@@ -20,11 +20,24 @@ import User from './user.jsx';
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
-        var auth = { _id: false, error: null };
         this.router = this.router.bind(this);
         this.ajax = this.ajax.bind(this);
-        // this.auth = this.auth.bind(auth);
-        this.state = { auth: auth, route: 'start', books: [] };
+        var auth = { _id: false, error: null };
+        this.state = { auth: auth, books: [] };
+
+        /**
+         * Mock auth for testing
+         */
+        // var auth = {
+        //     _id: '58eade61872e5725d487094c',
+        //     email: 'abc@cba.com',
+        //     name: 'poo',
+        //     city: '',
+        //     state: '',
+        //     error: null
+        // };
+        // this.state = { auth: auth, books: [] };
+
     }
     router(route) {
         console.log('main router');
@@ -104,6 +117,15 @@ export default class Main extends React.Component {
                 header.dataType = 'json'
                 header.data = JSON.stringify(data);
                 break;
+            case 'borrow':
+                // console.log('route: titles');
+                url = '/api/books'
+                header.url = url;
+                header.method = 'PUT';
+                header.contentType = "application/json";
+                header.dataType = 'json'
+                header.data = JSON.stringify(data);
+                break;
             case 'titles':
                 // console.log('route: titles');
                 url = '/api/books'
@@ -152,8 +174,8 @@ export default class Main extends React.Component {
          */
         $.ajax(header)
             .then(results => {
-                // console.log('AJAX .then');
-                // console.log(results);
+                console.log('AJAX .then');
+                console.log(results);
                 // console.log(route);
                 // console.log(results.user.email);
                 // console.log(results.user.password);
@@ -170,6 +192,22 @@ export default class Main extends React.Component {
                         // console.log(results.user);
                         auth = parseAuth(results.user, null);
                         // console.log(auth);
+                        break;
+                    case 'borrow':
+                        console.log('borrow .then');
+                        reroute = 'user';
+                        book = results;
+                        console.log(book);
+                        books = this.state.books;
+                        books.forEach(obj=>{
+                            if (obj._id === book._id) {
+                                obj.isAccept = book.isAccept;
+                                obj.isRequest = book.isRequest;
+                                obj.lendee = book.lendee;
+                            }
+                        });
+                        console.log(books);
+                        auth = parseAuth(this.state.auth)
                         break;
                     case 'title':
                         // console.log('title .then');
@@ -270,7 +308,7 @@ export default class Main extends React.Component {
                 page = <User ajax={this.ajax} auth={this.state.auth} books={this.state.books} />
                 break;
             case 'books':
-                page = <Books ajax={this.ajax} books={this.state.books} />
+                page = <Books ajax={this.ajax} auth={this.state.auth} books={this.state.books} />
                 break;
             default:
                 page = <Start />

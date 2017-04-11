@@ -95,6 +95,7 @@ function ClickHandler() {
 	this.addBook = (req, res) => {
 		console.log('addBook');
 		console.log(req.body);
+		// console.log(req.session.passport);
 		var title, options;
 
 		title = req.body.title;
@@ -123,9 +124,10 @@ function ClickHandler() {
 				// console.log(myBook);
 				// res.json(myBook);
 				//
-				Book.find({ _id: myBook._id, title: myBook.title }, (err, book) => {
+				Book.find({ bid: myBook.bid, uid: myBook.uid }, (err, book) => {
+					// console.log('book results');
+					// console.log(book);
 					if (err) throw err;
-
 					if (book.length) {
 						// console.log('sending json');
 						res.json({ isExists: true });

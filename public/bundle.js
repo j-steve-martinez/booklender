@@ -117,9 +117,9 @@
 	         * Mock auth for testing
 	         */
 	        // var auth = {
-	        //     _id: '58eade61872e5725d487094c',
+	        //     _id: '58ed2fd038cefd1c99fce80a',
 	        //     email: 'abc@cba.com',
-	        //     name: 'poo',
+	        //     name: '',
 	        //     city: '',
 	        //     state: '',
 	        //     error: null
@@ -594,28 +594,24 @@
 	            // console.log(books);
 	            if (this.state.isConfirm) {
 	                confirm = _react2.default.createElement(
-	                    'div',
-	                    { className: 'panel panel-warning' },
+	                    'form',
+	                    { className: 'form-horizontal' },
 	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'panel-heading' },
+	                        'label',
+	                        { className: 'well text-danger' },
 	                        'Borrow: ',
 	                        this.state.book.title,
-	                        '?'
+	                        '? '
 	                    ),
 	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'panel-footer' },
-	                        _react2.default.createElement(
-	                            'button',
-	                            { onClick: this.onConfirm, id: 'yes', className: 'btn btn-success' },
-	                            'YES'
-	                        ),
-	                        _react2.default.createElement(
-	                            'button',
-	                            { onClick: this.onConfirm, id: 'no', className: 'btn btn-danger' },
-	                            'NO'
-	                        )
+	                        'button',
+	                        { onClick: this.onConfirm, id: 'yes', className: 'btn btn-success btn-lg' },
+	                        'Yes'
+	                    ),
+	                    _react2.default.createElement(
+	                        'button',
+	                        { onClick: this.onConfirm, id: 'no', className: 'btn btn-danger btn-lg' },
+	                        'No'
 	                    )
 	                );
 	            } else {
@@ -630,6 +626,7 @@
 	                    'Available Books'
 	                ),
 	                confirm,
+	                _react2.default.createElement('br', null),
 	                books
 	            );
 	        }
@@ -5325,38 +5322,53 @@
 
 	        var _this = _possibleConstructorReturn(this, (User.__proto__ || Object.getPrototypeOf(User)).call(this, props));
 
-	        _this.clickHandler = _this.clickHandler.bind(_this);
-	        _this.submit = _this.submit.bind(_this);
+	        _this.onSubmit = _this.onSubmit.bind(_this);
+	        _this.onConfirm = _this.onConfirm.bind(_this);
 	        return _this;
 	    }
 
 	    _createClass(User, [{
-	        key: 'clickHandler',
-	        value: function clickHandler(path) {
-	            // console.log('User clickHandler');
-	            // console.log(path);
-	        }
-	    }, {
-	        key: 'submit',
-	        value: function submit(e) {
+	        key: 'onSubmit',
+	        value: function onSubmit(e) {
 	            e.preventDefault();
 	            console.log('login submit');
 	            // console.log(e.target.elements);
 	            // console.log(e.target.elements.title.value);
 	            var data, title;
 	            title = e.target.elements.title.value;
-	            data = {
-	                route: 'title',
-	                title: title
-	            };
-	            // console.log(data);
-	            this.props.ajax(data);
+	            if (title !== '') {
+	                data = {
+	                    route: 'title',
+	                    title: title
+	                };
+	                // console.log(data);
+	                this.props.ajax(data);
+	            }
 	        }
 	    }, {
 	        key: 'onConfirm',
 	        value: function onConfirm(e) {
 	            e.preventDefault();
-	            console.log(e.target.id);
+	            // console.log(e.target.id);
+	            // console.log(e.target.name);
+	            var book, route, data;
+	            book = this.props.books.filter(function (obj) {
+	                return obj.bid === e.target.name;
+	            })[0];
+	            if (e.target.id === 'yes') {
+	                book.isAccept = true;
+	                book.isRequest = true;
+	            } else {
+	                book.isAccept = false;
+	                book.isRequest = false;
+	                book.lendee = '';
+	            }
+	            // console.log(book);
+	            data = {
+	                route: 'borrow',
+	                book: book
+	            };
+	            this.props.ajax(data);
 	        }
 	    }, {
 	        key: 'render',
@@ -5365,7 +5377,7 @@
 
 	            console.log('User');
 	            console.log(this.props);
-	            var books, booksHtml, requests, requestsHtml, name, email, city, state;
+	            var books, booksHtml, borrowed, requests, requestsHtml, name, email, city, state;
 
 	            /**
 	             * Make sure some books exist
@@ -5388,12 +5400,42 @@
 	                });
 
 	                /**
+	                 * Filter out borrowed books
+	                 */
+	                borrowed = this.props.books.filter(function (obj) {
+	                    // console.log(obj.uid);
+	                    // console.log(this.props.auth._id);
+	                    return obj.lendee === _this2.props.auth._id && obj.isAccept === true;
+	                }).map(function (obj, key) {
+	                    // console.log(key);
+	                    // console.log(obj._id);
+	                    var html = _react2.default.createElement(
+	                        'form',
+	                        { key: key, className: 'form-horizontal' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { className: 'well text-success' },
+	                            'Return: ',
+	                            obj.title
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: _this2.onConfirm, name: obj.bid, id: 'return', type: 'submit', className: 'btn btn-success btn-lg' },
+	                            'Return'
+	                        )
+	                    );
+	                    return html;
+	                });
+	                console.log('borrowed');
+	                console.log(borrowed);
+
+	                /**
 	                 * Get the books other users want to borrow
 	                 */
-	                console.log('books.filter');
+	                // console.log('books.filter');
 	                requests = books.filter(function (obj) {
-	                    console.log(obj);
-	                    return obj.isRequest === true;
+	                    // console.log(obj);
+	                    return obj.isRequest === true && obj.isAccept === false;
 	                });
 
 	                requestsHtml = requests.map(function (obj, key) {
@@ -5410,13 +5452,13 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
-	                            { onClick: _this2.onConfirm, id: 'yes', type: 'submit', className: 'btn btn-success btn-lg' },
-	                            'YES'
+	                            { onClick: _this2.onConfirm, name: obj.bid, id: 'yes', type: 'submit', className: 'btn btn-success btn-lg' },
+	                            'Yes'
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
-	                            { onClick: _this2.onConfirm, id: 'no', type: 'submit', className: 'btn btn-danger btn-lg' },
-	                            'NO'
+	                            { onClick: _this2.onConfirm, name: obj.bid, id: 'no', type: 'submit', className: 'btn btn-danger btn-lg' },
+	                            'No'
 	                        )
 	                    );
 	                    return html;
@@ -5461,25 +5503,30 @@
 	                    null,
 	                    _react2.default.createElement(
 	                        'form',
-	                        { onSubmit: this.submit },
+	                        { onSubmit: this.onSubmit },
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'form-group' },
 	                            _react2.default.createElement(
 	                                'label',
 	                                { htmlFor: 'title' },
-	                                'Book Title:'
+	                                _react2.default.createElement(
+	                                    'h4',
+	                                    { className: 'text-primary' },
+	                                    'Book Title:'
+	                                )
 	                            ),
 	                            _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'title' })
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
-	                            { type: 'submit', className: 'btn btn-default' },
+	                            { type: 'submit', className: 'btn btn-primary' },
 	                            'Submit'
 	                        )
 	                    )
 	                ),
 	                _react2.default.createElement('br', null),
+	                borrowed,
 	                booksHtml
 	            );
 	        }

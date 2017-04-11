@@ -72,15 +72,11 @@ export default class Books extends React.Component {
         // console.log(books);
         if (this.state.isConfirm) {
             confirm = (
-
-                <div className="panel panel-warning">
-                    <div className="panel-heading">Borrow: {this.state.book.title}?</div>
-                    <div className="panel-footer">
-                        <button onClick={this.onConfirm} id='yes' className="btn btn-success">YES</button>
-                        <button onClick={this.onConfirm} id='no' className="btn btn-danger">NO</button>
-                    </div>
-                </div>
-
+                <form className="form-horizontal">
+                    <label className='well text-danger' >Borrow: {this.state.book.title}? </label>
+                    <button onClick={this.onConfirm} id='yes' className="btn btn-success btn-lg" >Yes</button>
+                    <button onClick={this.onConfirm} id='no'  className="btn btn-danger btn-lg" >No</button>
+                </form>
             )
         } else {
             confirm = null;
@@ -89,6 +85,7 @@ export default class Books extends React.Component {
             <div className="jumbotron" >
                 <h2>Available Books</h2>
                 {confirm}
+                <br />
                 {books}
             </div>
         );

@@ -29,9 +29,9 @@ export default class Main extends React.Component {
          * Mock auth for testing
          */
         // var auth = {
-        //     _id: '58eade61872e5725d487094c',
+        //     _id: '58ed2fd038cefd1c99fce80a',
         //     email: 'abc@cba.com',
-        //     name: 'poo',
+        //     name: '',
         //     city: '',
         //     state: '',
         //     error: null

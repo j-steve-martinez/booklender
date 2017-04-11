@@ -300,10 +300,10 @@
 	                        // console.log(auth);
 	                        break;
 	                    case 'borrow':
-	                        console.log('borrow .then');
+	                        // console.log('borrow .then');
 	                        reroute = 'user';
 	                        book = results;
-	                        console.log(book);
+	                        // console.log(book);
 	                        books = _this2.state.books;
 	                        books.forEach(function (obj) {
 	                            if (obj._id === book._id) {
@@ -312,7 +312,7 @@
 	                                obj.lendee = book.lendee;
 	                            }
 	                        });
-	                        console.log(books);
+	                        // console.log(books);
 	                        auth = parseAuth(_this2.state.auth);
 	                        break;
 	                    case 'title':
@@ -533,12 +533,12 @@
 	        value: function onClick(e) {
 	            // e.preventDefault();
 	            // console.log(e.target);
-	            console.log(e.target.id);
+	            // console.log(e.target.id);
 	            var uid, book;
 	            book = this.props.books.filter(function (obj) {
 	                return obj.bid === e.target.id;
 	            })[0];
-	            console.log(book);
+	            // console.log(book);
 	            var data = {
 	                isConfirm: true,
 	                book: book
@@ -549,14 +549,14 @@
 	        key: 'onConfirm',
 	        value: function onConfirm(e) {
 	            // e.preventDefault();
-	            console.log(e.target.id);
+	            // console.log(e.target.id);
 	            if (e.target.id === 'yes') {
 	                var data = this.state;
 	                delete data.isConfirm;
 	                data.route = 'borrow';
 	                data.book.isRequest = true;
 	                data.book.lendee = this.props.auth._id;
-	                console.log(data);
+	                // console.log(data);
 	                this.props.ajax(data);
 	            } else {
 	                var data = {
@@ -571,9 +571,9 @@
 	        value: function render() {
 	            var _this2 = this;
 
-	            console.log('Books props');
-	            console.log(this.props);
-	            console.log(this.state);
+	            // console.log('Books props');
+	            // console.log(this.props);
+	            // console.log(this.state);
 	            var books, confirm;
 	            books = this.props.books
 	            /**
@@ -5353,13 +5353,78 @@
 	            this.props.ajax(data);
 	        }
 	    }, {
+	        key: 'onConfirm',
+	        value: function onConfirm(e) {
+	            e.preventDefault();
+	            console.log(e.target.id);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            // console.log('User');
-	            // console.log(this.props);
-	            var lending, borrow, name, email, city, state;
-	            lending = 2;
-	            borrow = 3;
+	            var _this2 = this;
+
+	            console.log('User');
+	            console.log(this.props);
+	            var books, booksHtml, requests, requestsHtml, name, email, city, state;
+
+	            /**
+	             * Make sure some books exist
+	             */
+	            if (this.props.books.length > 0) {
+	                /**
+	                 * Filter out user books
+	                 */
+	                books = this.props.books.filter(function (obj) {
+	                    // console.log(obj.uid);
+	                    // console.log(this.props.auth._id);
+	                    return obj.uid === _this2.props.auth._id;
+	                });
+
+	                booksHtml = books.map(function (obj, key) {
+	                    // console.log(key);
+	                    // console.log(obj._id);
+	                    var html = _react2.default.createElement('img', { key: key, id: obj.bid, src: obj.thumbnail, alt: obj.title, height: '180', width: '128' });
+	                    return html;
+	                });
+
+	                /**
+	                 * Get the books other users want to borrow
+	                 */
+	                console.log('books.filter');
+	                requests = books.filter(function (obj) {
+	                    console.log(obj);
+	                    return obj.isRequest === true;
+	                });
+
+	                requestsHtml = requests.map(function (obj, key) {
+	                    // console.log(key);
+	                    // console.log(obj._id);
+	                    var html = _react2.default.createElement(
+	                        'form',
+	                        { key: key, className: 'form-horizontal' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { className: 'well text-danger' },
+	                            'Loan: ',
+	                            obj.title
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: _this2.onConfirm, id: 'yes', type: 'submit', className: 'btn btn-success btn-lg' },
+	                            'YES'
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: _this2.onConfirm, id: 'no', type: 'submit', className: 'btn btn-danger btn-lg' },
+	                            'NO'
+	                        )
+	                    );
+	                    return html;
+	                });
+	            } else {
+	                booksHtml = null;
+	                requestsHtml = null;
+	            }
 
 	            this.props.auth.name ? name = this.props.auth.name : name = null;
 	            this.props.auth.email ? email = this.props.auth.email : email = null;
@@ -5389,27 +5454,8 @@
 	                    null,
 	                    state
 	                ),
-	                _react2.default.createElement(
-	                    'button',
-	                    { className: 'btn btn-primary', type: 'button' },
-	                    'Borrowed ',
-	                    _react2.default.createElement(
-	                        'span',
-	                        { className: 'badge' },
-	                        borrow
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    'button',
-	                    { className: 'btn btn-primary', type: 'button' },
-	                    'Lending ',
-	                    _react2.default.createElement(
-	                        'span',
-	                        { className: 'badge' },
-	                        lending
-	                    )
-	                ),
 	                _react2.default.createElement('br', null),
+	                requestsHtml,
 	                _react2.default.createElement(
 	                    'div',
 	                    null,
@@ -5432,7 +5478,9 @@
 	                            'Submit'
 	                        )
 	                    )
-	                )
+	                ),
+	                _react2.default.createElement('br', null),
+	                booksHtml
 	            );
 	        }
 	    }]);

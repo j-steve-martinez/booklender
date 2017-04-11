@@ -24,12 +24,63 @@ export default class User extends React.Component {
         // console.log(data);
         this.props.ajax(data);
     }
+    onConfirm(e) {
+        e.preventDefault();
+        console.log(e.target.id);
+    }
     render() {
-        // console.log('User');
-        // console.log(this.props);
-        var lending, borrow, name, email, city, state;
-        lending = 2;
-        borrow = 3;
+        console.log('User');
+        console.log(this.props);
+        var books, booksHtml, requests, requestsHtml, name, email, city, state;
+
+        /**
+         * Make sure some books exist
+         */
+        if (this.props.books.length > 0) {
+            /**
+             * Filter out user books
+             */
+            books = this.props.books.filter(obj => {
+                // console.log(obj.uid);
+                // console.log(this.props.auth._id);
+                return obj.uid === this.props.auth._id
+            });
+
+            booksHtml = books.map((obj, key) => {
+                // console.log(key);
+                // console.log(obj._id);
+                var html = (
+                        <img key={key} id={obj.bid} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
+                )
+                return html;
+            })
+
+            /**
+             * Get the books other users want to borrow
+             */
+            console.log('books.filter');
+            requests = books.filter(obj => {
+                console.log(obj);
+                return obj.isRequest === true;
+
+            });
+
+            requestsHtml = requests.map((obj, key) => {
+                // console.log(key);
+                // console.log(obj._id);
+                var html = (
+                    <form key={key} className="form-horizontal">
+                        <label className='well text-danger' >Loan: {obj.title}</label>
+                        <button onClick={this.onConfirm} id='yes' type='submit' className="btn btn-success btn-lg">YES</button>
+                        <button onClick={this.onConfirm} id='no' type='submit' className="btn btn-danger btn-lg">NO</button>
+                    </form>
+                )
+                return html;
+            })
+        } else {
+            booksHtml = null;
+            requestsHtml = null;
+        }
 
         this.props.auth.name ? name = this.props.auth.name : name = null;
         this.props.auth.email ? email = this.props.auth.email : email = null;
@@ -42,13 +93,8 @@ export default class User extends React.Component {
                 <h2>{email}</h2>
                 <h3>{city}</h3>
                 <h3>{state}</h3>
-                <button className="btn btn-primary" type="button">
-                    Borrowed <span className="badge">{borrow}</span>
-                </button>
-                <button className="btn btn-primary" type="button">
-                    Lending <span className="badge">{lending}</span>
-                </button>
                 <br />
+                {requestsHtml}
                 <div>
                     <form onSubmit={this.submit} >
                         <div className="form-group">
@@ -58,6 +104,8 @@ export default class User extends React.Component {
                         <button type="submit" className="btn btn-default">Submit</button>
                     </form>
                 </div>
+                <br />
+                {booksHtml}
             </div>
         )
     }

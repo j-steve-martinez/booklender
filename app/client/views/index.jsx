@@ -194,10 +194,10 @@ export default class Main extends React.Component {
                         // console.log(auth);
                         break;
                     case 'borrow':
-                        console.log('borrow .then');
+                        // console.log('borrow .then');
                         reroute = 'user';
                         book = results;
-                        console.log(book);
+                        // console.log(book);
                         books = this.state.books;
                         books.forEach(obj=>{
                             if (obj._id === book._id) {
@@ -206,7 +206,7 @@ export default class Main extends React.Component {
                                 obj.lendee = book.lendee;
                             }
                         });
-                        console.log(books);
+                        // console.log(books);
                         auth = parseAuth(this.state.auth)
                         break;
                     case 'title':

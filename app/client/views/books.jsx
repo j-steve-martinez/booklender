@@ -14,12 +14,12 @@ export default class Books extends React.Component {
     onClick(e) {
         // e.preventDefault();
         // console.log(e.target);
-        console.log(e.target.id);
+        // console.log(e.target.id);
         var uid, book;
         book = this.props.books.filter(obj => {
             return obj.bid === e.target.id
         })[0];
-        console.log(book);
+        // console.log(book);
         var data = {
             isConfirm: true,
             book: book
@@ -28,14 +28,14 @@ export default class Books extends React.Component {
     }
     onConfirm(e) {
         // e.preventDefault();
-        console.log(e.target.id);
+        // console.log(e.target.id);
         if (e.target.id === 'yes') {
             var data = this.state;
             delete data.isConfirm;
             data.route = 'borrow'
             data.book.isRequest = true;
             data.book.lendee = this.props.auth._id;
-            console.log(data);
+            // console.log(data);
             this.props.ajax(data)
         } else {
             var data = {
@@ -46,9 +46,9 @@ export default class Books extends React.Component {
         }
     }
     render() {
-        console.log('Books props');
-        console.log(this.props);
-        console.log(this.state);
+        // console.log('Books props');
+        // console.log(this.props);
+        // console.log(this.state);
         var books, confirm;
         books = this.props.books
             /**

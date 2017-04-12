@@ -132,8 +132,8 @@
 	    _createClass(Main, [{
 	        key: 'router',
 	        value: function router(route) {
-	            console.log('main router');
-	            console.log(route);
+	            // console.log('main router');
+	            // console.log(route);
 	            /**
 	             * Routes:
 	             *  login
@@ -280,8 +280,8 @@
 	             * Get data from server
 	             */
 	            $.ajax(header).then(function (results) {
-	                console.log('AJAX .then');
-	                console.log(results);
+	                // console.log('AJAX .then');
+	                // console.log(results);
 	                // console.log(route);
 	                // console.log(results.user.email);
 	                // console.log(results.user.password);
@@ -314,6 +314,7 @@
 	                        });
 	                        // console.log(books);
 	                        auth = parseAuth(_this2.state.auth);
+	                        _this2.state.primus.write(book);
 	                        break;
 	                    case 'title':
 	                        // console.log('title .then');
@@ -379,11 +380,22 @@
 	             * Set the primus handler
 	             */
 	            var primus = new Primus();
-	            primus.on('data', function (pData) {
-	                // console.log('primus pData');
-	                // console.log(pData);
-	                if ((typeof pData === 'undefined' ? 'undefined' : _typeof(pData)) === 'object') {
-	                    _this3.setState({ pData: pData });
+	            primus.on('data', function (book) {
+	                // console.log('primus book');
+	                // console.log(book);
+	                // console.log(typeof book);
+	                if ((typeof book === 'undefined' ? 'undefined' : _typeof(book)) === 'object') {
+	                    // console.log('primus setting state');
+	                    // console.log(book);
+	                    var books = _this3.state.books;
+	                    books.forEach(function (obj) {
+	                        if (obj.bid === book.bid) {
+	                            obj.isAccept = book.isAccept;
+	                            obj.isRequest = book.isRequest;
+	                            obj.lendee = book.lendee;
+	                        }
+	                    });
+	                    _this3.setState({ books: books });
 	                }
 	            });
 	            // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
@@ -397,8 +409,8 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log('Main render');
-	            console.log(this.state);
+	            // console.log('Main render');
+	            // console.log(this.state);
 	            var page;
 	            switch (this.state.route) {
 	                case 'start':
@@ -5331,7 +5343,7 @@
 	        key: 'onSubmit',
 	        value: function onSubmit(e) {
 	            e.preventDefault();
-	            console.log('login submit');
+	            // console.log('login submit');
 	            // console.log(e.target.elements);
 	            // console.log(e.target.elements.title.value);
 	            var data, title;
@@ -5375,9 +5387,9 @@
 	        value: function render() {
 	            var _this2 = this;
 
-	            console.log('User');
-	            console.log(this.props);
-	            var books, booksHtml, borrowed, requests, requestsHtml, name, email, city, state;
+	            // console.log('User');
+	            // console.log(this.props);
+	            var books, booksHtml, borrowed, borrowedHtml, requests, requestsHtml, name, email, city, state;
 
 	            /**
 	             * Make sure some books exist
@@ -5406,7 +5418,11 @@
 	                    // console.log(obj.uid);
 	                    // console.log(this.props.auth._id);
 	                    return obj.lendee === _this2.props.auth._id && obj.isAccept === true;
-	                }).map(function (obj, key) {
+	                });
+	                // console.log('borrowed');
+	                // console.log(borrowed);
+
+	                borrowedHtml = borrowed.map(function (obj, key) {
 	                    // console.log(key);
 	                    // console.log(obj._id);
 	                    var html = _react2.default.createElement(
@@ -5426,8 +5442,6 @@
 	                    );
 	                    return html;
 	                });
-	                console.log('borrowed');
-	                console.log(borrowed);
 
 	                /**
 	                 * Get the books other users want to borrow
@@ -5437,6 +5451,8 @@
 	                    // console.log(obj);
 	                    return obj.isRequest === true && obj.isAccept === false;
 	                });
+	                // console.log('requests');
+	                // console.log(requests);
 
 	                requestsHtml = requests.map(function (obj, key) {
 	                    // console.log(key);
@@ -5526,7 +5542,7 @@
 	                    )
 	                ),
 	                _react2.default.createElement('br', null),
-	                borrowed,
+	                borrowedHtml,
 	                booksHtml
 	            );
 	        }

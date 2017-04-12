@@ -8,7 +8,7 @@ export default class User extends React.Component {
     }
     onSubmit(e) {
         e.preventDefault();
-        console.log('login submit');
+        // console.log('login submit');
         // console.log(e.target.elements);
         // console.log(e.target.elements.title.value);
         var data, title;
@@ -46,9 +46,9 @@ export default class User extends React.Component {
         this.props.ajax(data);
     }
     render() {
-        console.log('User');
-        console.log(this.props);
-        var books, booksHtml, borrowed, requests, requestsHtml, name, email, city, state;
+        // console.log('User');
+        // console.log(this.props);
+        var books, booksHtml, borrowed, borrowedHtml, requests, requestsHtml, name, email, city, state;
 
         /**
          * Make sure some books exist
@@ -79,7 +79,11 @@ export default class User extends React.Component {
                 // console.log(obj.uid);
                 // console.log(this.props.auth._id);
                 return obj.lendee === this.props.auth._id && obj.isAccept === true;
-            }).map((obj, key) => {
+            });
+            // console.log('borrowed');
+            // console.log(borrowed);
+
+            borrowedHtml = borrowed.map((obj, key) => {
                 // console.log(key);
                 // console.log(obj._id);
                 var html = (
@@ -90,8 +94,6 @@ export default class User extends React.Component {
                 )
                 return html
             });
-            console.log('borrowed');
-            console.log(borrowed);
 
             /**
              * Get the books other users want to borrow
@@ -102,6 +104,8 @@ export default class User extends React.Component {
                 return obj.isRequest === true && obj.isAccept === false;
 
             });
+            // console.log('requests');
+            // console.log(requests);
 
             requestsHtml = requests.map((obj, key) => {
                 // console.log(key);
@@ -143,7 +147,7 @@ export default class User extends React.Component {
                     </form>
                 </div>
                 <br />
-                {borrowed}
+                {borrowedHtml}
                 {booksHtml}
             </div>
         )

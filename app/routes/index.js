@@ -107,7 +107,7 @@ module.exports = function (app, passport, primus) {
 				 */
 				primus.forEach(function (spark, id, connections) {
 
-					if (sourceId !== spark.id) {
+					if (sourceId !== spark.id && typeof data !== 'string') {
 						console.log('sending ' + data + ' to ' + spark.id);
 
 						spark.write(data);

@@ -40,8 +40,8 @@ export default class Main extends React.Component {
 
     }
     router(route) {
-        console.log('main router');
-        console.log(route);
+        // console.log('main router');
+        // console.log(route);
         /**
          * Routes:
          *  login
@@ -174,8 +174,8 @@ export default class Main extends React.Component {
          */
         $.ajax(header)
             .then(results => {
-                console.log('AJAX .then');
-                console.log(results);
+                // console.log('AJAX .then');
+                // console.log(results);
                 // console.log(route);
                 // console.log(results.user.email);
                 // console.log(results.user.password);
@@ -207,7 +207,8 @@ export default class Main extends React.Component {
                             }
                         });
                         // console.log(books);
-                        auth = parseAuth(this.state.auth)
+                        auth = parseAuth(this.state.auth);
+                        this.state.primus.write(book);
                         break;
                     case 'title':
                         // console.log('title .then');
@@ -272,11 +273,22 @@ export default class Main extends React.Component {
          * Set the primus handler
          */
         var primus = new Primus();
-        primus.on('data', pData => {
-            // console.log('primus pData');
-            // console.log(pData);
-            if (typeof pData === 'object') {
-                this.setState({ pData: pData })
+        primus.on('data', book => {
+            // console.log('primus book');
+            // console.log(book);
+            // console.log(typeof book);
+            if (typeof book === 'object') {
+                // console.log('primus setting state');
+                // console.log(book);
+                var books = this.state.books;
+                books.forEach(obj=>{
+                    if (obj.bid === book.bid) {
+                        obj.isAccept = book.isAccept;
+                        obj.isRequest = book.isRequest;
+                        obj.lendee = book.lendee;
+                    }
+                });
+                this.setState({ books: books })
             }
         });
         // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
@@ -288,8 +300,8 @@ export default class Main extends React.Component {
         // this.setState({ primus: primus });
     }
     render() {
-        console.log('Main render');
-        console.log(this.state);
+        // console.log('Main render');
+        // console.log(this.state);
         var page;
         switch (this.state.route) {
             case 'start':

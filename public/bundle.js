@@ -51,6 +51,10 @@
 	 * User Story: I can propose a trade and wait for the other user to accept the trade.
 	 */
 
+	/**
+	 * Send the new book to all clients using primus/websockets
+	 */
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -182,14 +186,13 @@
 	                var auth, books, error, obj, id, name, email, city, state;
 	                // console.log('parseAuth');
 	                // console.log(data);
-	                // console.log(book);
+
 	                data._id ? id = data._id : id = false;
 	                data.name ? name = data.name : name = '';
 	                data.email ? email = data.email : email = '';
 	                data.city ? city = data.city : city = '';
 	                data.state ? state = data.state : state = '';
 	                data.error ? error = data.error : error = null;
-	                // data.books ? books = data.books : books = [];
 
 	                obj = {
 	                    _id: id,
@@ -200,13 +203,6 @@
 	                    // books: books,
 	                    error: error
 	                };
-
-	                // if (books !== undefined) {
-	                //     console.log('parseAuth adding new book');
-	                //     obj.books.push(book);
-	                // }
-	                // console.log('parseAuth obj');
-	                // console.log(obj);
 	                return obj;
 	            }
 
@@ -340,7 +336,7 @@
 	                    case 'user':
 	                        // console.log('user .then');
 	                        reroute = 'user';
-	                        auth = parseAuth(results.user, null);
+	                        auth = parseAuth(results.user);
 	                    // console.log(auth);
 	                }
 	                // console.log('reroute..........');
@@ -389,7 +385,7 @@
 	                    // console.log(book);
 	                    var books = _this3.state.books;
 	                    books.forEach(function (obj) {
-	                        if (obj.bid === book.bid) {
+	                        if (obj._id === book._id) {
 	                            obj.isAccept = book.isAccept;
 	                            obj.isRequest = book.isRequest;
 	                            obj.lendee = book.lendee;
@@ -543,25 +539,37 @@
 	    _createClass(Books, [{
 	        key: 'onClick',
 	        value: function onClick(e) {
-	            // e.preventDefault();
+	            e.preventDefault();
 	            // console.log(e.target);
 	            // console.log(e.target.id);
 	            var uid, book;
 	            book = this.props.books.filter(function (obj) {
-	                return obj.bid === e.target.id;
+	                return obj._id === e.target.id;
 	            })[0];
 	            // console.log(book);
 	            var data = {
 	                isConfirm: true,
 	                book: book
 	            };
+	            function findPos(obj) {
+	                var curtop = 0;
+	                if (obj.offsetParent) {
+	                    do {
+	                        curtop += obj.offsetTop;
+	                    } while (obj = obj.offsetParent);
+	                    return [curtop];
+	                }
+	            }
+	            window.scrollTo(0, findPos(document.getElementById("title")));
+	            // scrollTo(0, 100);
 	            this.setState(data);
 	        }
 	    }, {
 	        key: 'onConfirm',
 	        value: function onConfirm(e) {
-	            // e.preventDefault();
+	            e.preventDefault();
 	            // console.log(e.target.id);
+
 	            if (e.target.id === 'yes') {
 	                var data = this.state;
 	                delete data.isConfirm;
@@ -599,7 +607,7 @@
 	                var tmp = _react2.default.createElement(
 	                    'a',
 	                    { key: key, onClick: _this2.onClick, href: '#' },
-	                    _react2.default.createElement('img', { id: obj.bid, src: obj.thumbnail, alt: obj.title, height: '180', width: '128' })
+	                    _react2.default.createElement('img', { id: obj._id, src: obj.thumbnail, alt: obj.title, height: '180', width: '128' })
 	                );
 	                return tmp;
 	            });
@@ -634,7 +642,7 @@
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
 	                    'h2',
-	                    null,
+	                    { id: 'title' },
 	                    'Available Books'
 	                ),
 	                confirm,
@@ -5365,7 +5373,7 @@
 	            // console.log(e.target.name);
 	            var book, route, data;
 	            book = this.props.books.filter(function (obj) {
-	                return obj.bid === e.target.name;
+	                return obj._id === e.target.name;
 	            })[0];
 	            if (e.target.id === 'yes') {
 	                book.isAccept = true;
@@ -5436,7 +5444,7 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
-	                            { onClick: _this2.onConfirm, name: obj.bid, id: 'return', type: 'submit', className: 'btn btn-success btn-lg' },
+	                            { onClick: _this2.onConfirm, name: obj._id, id: 'return', type: 'submit', className: 'btn btn-success btn-lg' },
 	                            'Return'
 	                        )
 	                    );
@@ -5468,12 +5476,12 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
-	                            { onClick: _this2.onConfirm, name: obj.bid, id: 'yes', type: 'submit', className: 'btn btn-success btn-lg' },
+	                            { onClick: _this2.onConfirm, name: obj._id, id: 'yes', type: 'submit', className: 'btn btn-success btn-lg' },
 	                            'Yes'
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
-	                            { onClick: _this2.onConfirm, name: obj.bid, id: 'no', type: 'submit', className: 'btn btn-danger btn-lg' },
+	                            { onClick: _this2.onConfirm, name: obj._id, id: 'no', type: 'submit', className: 'btn btn-danger btn-lg' },
 	                            'No'
 	                        )
 	                    );

@@ -12,23 +12,35 @@ export default class Books extends React.Component {
         this.state = data;
     }
     onClick(e) {
-        // e.preventDefault();
+        e.preventDefault();
         // console.log(e.target);
         // console.log(e.target.id);
         var uid, book;
         book = this.props.books.filter(obj => {
-            return obj.bid === e.target.id
+            return obj._id === e.target.id
         })[0];
         // console.log(book);
         var data = {
             isConfirm: true,
             book: book
         };
+        function findPos(obj) {
+            var curtop = 0;
+            if (obj.offsetParent) {
+                do {
+                    curtop += obj.offsetTop;
+                } while (obj = obj.offsetParent);
+                return [curtop];
+            }
+        }
+        window.scrollTo(0,findPos(document.getElementById("title")));
+        // scrollTo(0, 100);
         this.setState(data);
     }
     onConfirm(e) {
-        // e.preventDefault();
+        e.preventDefault();
         // console.log(e.target.id);
+
         if (e.target.id === 'yes') {
             var data = this.state;
             delete data.isConfirm;
@@ -63,7 +75,7 @@ export default class Books extends React.Component {
                 var tmp = (
                     <a key={key} onClick={this.onClick} href='#' >
                         {/*<span  className='glyphicon glyphicon-transfer' >*/}
-                        <img id={obj.bid} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
+                        <img id={obj._id} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
                         {/*</span>*/}
                     </a>
                 )
@@ -75,7 +87,7 @@ export default class Books extends React.Component {
                 <form className="form-horizontal">
                     <label className='well text-danger' >Borrow: {this.state.book.title}? </label>
                     <button onClick={this.onConfirm} id='yes' className="btn btn-success btn-lg" >Yes</button>
-                    <button onClick={this.onConfirm} id='no'  className="btn btn-danger btn-lg" >No</button>
+                    <button onClick={this.onConfirm} id='no' className="btn btn-danger btn-lg" >No</button>
                 </form>
             )
         } else {
@@ -83,7 +95,7 @@ export default class Books extends React.Component {
         }
         return (
             <div className="jumbotron" >
-                <h2>Available Books</h2>
+                <h2 id='title' >Available Books</h2>
                 {confirm}
                 <br />
                 {books}

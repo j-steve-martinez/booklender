@@ -5,6 +5,10 @@
  * User Story: I can propose a trade and wait for the other user to accept the trade.
  */
 
+/**
+ * Send the new book to all clients using primus/websockets
+ */
+
 'use strict'
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -75,14 +79,13 @@ export default class Main extends React.Component {
             var auth, books, error, obj, id, name, email, city, state;
             // console.log('parseAuth');
             // console.log(data);
-            // console.log(book);
+ 
             data._id ? id = data._id : id = false;
             data.name ? name = data.name : name = '';
             data.email ? email = data.email : email = '';
             data.city ? city = data.city : city = '';
             data.state ? state = data.state : state = '';
             data.error ? error = data.error : error = null;
-            // data.books ? books = data.books : books = [];
 
             obj = {
                 _id: id,
@@ -93,13 +96,6 @@ export default class Main extends React.Component {
                 // books: books,
                 error: error
             }
-
-            // if (books !== undefined) {
-            //     console.log('parseAuth adding new book');
-            //     obj.books.push(book);
-            // }
-            // console.log('parseAuth obj');
-            // console.log(obj);
             return obj;
         }
 
@@ -234,7 +230,7 @@ export default class Main extends React.Component {
                     case 'user':
                         // console.log('user .then');
                         reroute = 'user';
-                        auth = parseAuth(results.user, null);
+                        auth = parseAuth(results.user);
                     // console.log(auth);
                 }
                 // console.log('reroute..........');
@@ -282,7 +278,7 @@ export default class Main extends React.Component {
                 // console.log(book);
                 var books = this.state.books;
                 books.forEach(obj=>{
-                    if (obj.bid === book.bid) {
+                    if (obj._id === book._id) {
                         obj.isAccept = book.isAccept;
                         obj.isRequest = book.isRequest;
                         obj.lendee = book.lendee;

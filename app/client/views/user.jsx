@@ -28,7 +28,7 @@ export default class User extends React.Component {
         // console.log(e.target.name);
         var book, route, data;
         book = this.props.books.filter(obj => {
-            return obj.bid === e.target.name;
+            return obj._id === e.target.name;
         })[0];
         if (e.target.id === 'yes') {
             book.isAccept = true;
@@ -89,7 +89,7 @@ export default class User extends React.Component {
                 var html = (
                     <form key={key} className="form-horizontal">
                         <label className='well text-success' >Return: {obj.title}</label>
-                        <button onClick={this.onConfirm} name={obj.bid} id='return' type='submit' className="btn btn-success btn-lg">Return</button>
+                        <button onClick={this.onConfirm} name={obj._id} id='return' type='submit' className="btn btn-success btn-lg">Return</button>
                     </form>
                 )
                 return html
@@ -113,8 +113,8 @@ export default class User extends React.Component {
                 var html = (
                     <form key={key} className="form-horizontal">
                         <label className='well text-danger' >Loan: {obj.title}</label>
-                        <button onClick={this.onConfirm} name={obj.bid} id='yes' type='submit' className="btn btn-success btn-lg">Yes</button>
-                        <button onClick={this.onConfirm} name={obj.bid} id='no' type='submit' className="btn btn-danger btn-lg">No</button>
+                        <button onClick={this.onConfirm} name={obj._id} id='yes' type='submit' className="btn btn-success btn-lg">Yes</button>
+                        <button onClick={this.onConfirm} name={obj._id} id='no' type='submit' className="btn btn-danger btn-lg">No</button>
                     </form>
                 )
                 return html;

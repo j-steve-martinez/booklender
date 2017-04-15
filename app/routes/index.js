@@ -102,21 +102,21 @@ module.exports = function (app, passport, primus) {
 		 * Wait for all data to be received from the client
 		 */
 		spark.on('data', function received(data) {
-			var sourceId = spark.id;
-			console.log('source id');
-			console.log(sourceId);
+			// var sourceId = spark.id;
+			// console.log('source id');
+			// console.log(sourceId);
 			if (typeof data === 'object') {
-				console.log(spark.id, 'received data:');
-				console.log(typeof data);
-				console.log(data);
+				// console.log(spark.id, 'received data:');
+				// console.log(typeof data);
+				// console.log(data);
 				/**
 				 * Send the message to all clients
 				 */
 				primus.forEach(function (spark, id, connections) {
 
 					if (sourceId !== spark.id && typeof data !== 'string') {
-						console.log('sending to ' + spark.id + ' this data:');
-						console.log(data);
+						// console.log('sending to ' + spark.id + ' this data:');
+						// console.log(data);
 
 						spark.write(data);
 					}

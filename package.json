@@ -19,7 +19,9 @@
     "reactjs",
     "nodejs",
     "javascript",
-    "mongodb"
+    "mongodb",
+    "primus",
+    "websockets"
   ],
   "author": "J. Steve Martinez",
   "license": "MIT",
@@ -38,9 +40,7 @@
     "if-env": "1.0.0",
     "mongoose": "4.9.3",
     "passport": "0.3.2",
-    "passport-github": "1.1.0",
     "passport-local": "1.0.0",
-    "passport-twitter": "1.0.4",
     "primus": "7.0.0",
     "react": "15.4.2",
     "react-dom": "15.4.2",

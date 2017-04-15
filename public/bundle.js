@@ -44,6 +44,17 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * User Story: I can view all books posted by every user.
+	 * User Story: I can add a new book.
+	 * User Story: I can update my settings to store my full name, city, and state.
+	 * User Story: I can propose a trade and wait for the other user to accept the trade.
+	 */
+
+	/**
+	 * Send the new book to all clients using primus/websockets
+	 */
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -197,57 +208,67 @@
 
 	            books = this.state.books;
 	            route = data.route;
-	            // url = window.location.origin;
+	            url = window.location.origin;
 
 	            switch (route) {
 	                case 'signup':
 	                    // console.log('route: signup');
 	                    url = '/signup';
-	                    header.method = 'POST';
 	                    header.url = url;
+	                    header.method = 'POST';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'borrow':
 	                    // console.log('route: titles');
 	                    url = '/api/books';
+	                    header.url = url;
 	                    header.method = 'PUT';
-	                    header.url = url;
-	                    break;
-	                case 'delete':
-	                    // console.log('route: titles');
-	                    url = '/api/books';
-	                    header.method = 'DELETE';
-	                    header.url = url;
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'titles':
 	                    // console.log('route: titles');
 	                    url = '/api/books';
-	                    header.method = 'GET';
 	                    header.url = url;
+	                    header.method = 'GET';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'title':
 	                    // console.log('route: title');
 	                    url = '/api/books';
-	                    header.method = 'POST';
 	                    header.url = url;
+	                    header.method = 'POST';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'update':
 	                    // console.log('route: update');
 	                    url = '/update';
-	                    header.method = 'POST';
 	                    header.url = url;
+	                    header.method = 'POST';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
 	                    break;
 	                case 'user':
 	                    // console.log('route: user');
 	                    url = '/login';
-	                    header.method = 'POST';
 	                    header.url = url;
+	                    header.method = 'POST';
+	                    header.contentType = "application/json";
+	                    header.dataType = 'json';
+	                    header.data = JSON.stringify(data);
 	                    break;
 	                default:
 	                    break;
 	            }
-	            header.contentType = "application/json";
-	            header.dataType = 'json';
-	            header.data = JSON.stringify(data);
+
 	            // console.log('ajax header');
 	            // console.log(header);
 
@@ -274,22 +295,6 @@
 	                        auth = parseAuth(results.user, null);
 	                        // console.log(auth);
 	                        break;
-	                    case 'delete':
-	                        // console.log('delete .then');
-	                        reroute = 'user';
-	                        book = results;
-	                        // console.log(book);
-	                        books = _this2.state.books.filter(function (obj) {
-	                            return obj._id !== book._id;
-	                        });
-	                        // console.log(books);
-	                        auth = parseAuth(_this2.state.auth);
-	                        var data = {
-	                            action: 'delete',
-	                            book: book
-	                        };
-	                        _this2.state.primus.write(data);
-	                        break;
 	                    case 'borrow':
 	                        // console.log('borrow .then');
 	                        reroute = 'user';
@@ -305,11 +310,7 @@
 	                        });
 	                        // console.log(books);
 	                        auth = parseAuth(_this2.state.auth);
-	                        var data = {
-	                            action: 'borrow',
-	                            book: book
-	                        };
-	                        _this2.state.primus.write(data);
+	                        _this2.state.primus.write(book);
 	                        break;
 	                    case 'title':
 	                        // console.log('title .then');
@@ -320,12 +321,6 @@
 
 	                        books.push(book);
 	                        auth = parseAuth(_this2.state.auth);
-	                        var data = {
-	                            action: 'add',
-	                            book: book
-	                        };
-	                        _this2.state.primus.write(data);
-	                        // this.state.primus.write(book);
 	                        // console.log(auth);
 	                        break;
 	                    case 'titles':
@@ -381,51 +376,22 @@
 	             * Set the primus handler
 	             */
 	            var primus = new Primus();
-	            primus.on('data', function (data) {
+	            primus.on('data', function (book) {
 	                // console.log('primus book');
-	                // console.log(data);
-	                // console.log(typeof data);
-	                if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
+	                // console.log(book);
+	                // console.log(typeof book);
+	                if ((typeof book === 'undefined' ? 'undefined' : _typeof(book)) === 'object') {
 	                    // console.log('primus setting state');
-	                    // console.log(data);
-	                    var action, book, books;
-	                    action = data.action;
-	                    book = data.book;
-	                    switch (action) {
-	                        case 'add':
-	                            // console.log('primus case add');
-	                            books = _this3.state.books;
-	                            books.push(book);
-	                            // console.log('books');
-	                            // console.log(books);
-	                            _this3.setState({ books: books });
-	                            break;
-	                        case 'borrow':
-	                            // console.log('primus case borrow');
-	                            books = _this3.state.books;
-	                            books.forEach(function (obj) {
-	                                if (obj._id === book._id) {
-	                                    obj.isAccept = book.isAccept;
-	                                    obj.isRequest = book.isRequest;
-	                                    obj.lendee = book.lendee;
-	                                }
-	                            });
-	                            // console.log('books');
-	                            // console.log(books);
-	                            _this3.setState({ books: books });
-	                            break;
-	                        case 'delete':
-	                            // console.log('primus case delete');
-	                            books = _this3.state.books.filter(function (obj) {
-	                                return obj._id !== book._id;
-	                            });
-	                            // console.log('books');
-	                            // console.log(books);
-	                            _this3.setState({ books: books });
-	                            break;
-	                    }
-	                    // console.log('books');
-	                    // console.log(books);
+	                    // console.log(book);
+	                    var books = _this3.state.books;
+	                    books.forEach(function (obj) {
+	                        if (obj._id === book._id) {
+	                            obj.isAccept = book.isAccept;
+	                            obj.isRequest = book.isRequest;
+	                            obj.lendee = book.lendee;
+	                        }
+	                    });
+	                    _this3.setState({ books: books });
 	                }
 	            });
 	            // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });

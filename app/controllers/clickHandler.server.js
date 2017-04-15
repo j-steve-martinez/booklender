@@ -93,8 +93,8 @@ function ClickHandler() {
 	}
 
 	this.addBook = (req, res) => {
-		console.log('addBook');
-		console.log(req.body);
+		// console.log('addBook');
+		// console.log(req.body);
 		// console.log(req.session.passport);
 		var title, options;
 
@@ -109,6 +109,10 @@ function ClickHandler() {
 		};
 
 		Books.search(title, options, function (error, results, apiResponse) {
+				// console.log('googleBook search results');
+				// console.log(error);
+				// console.log(results);
+				// console.log(apiResponse);
 			if (error) {
 				// console.log(error);
 				throw error;
@@ -121,7 +125,6 @@ function ClickHandler() {
 				myBook.thumbnail = results[0].thumbnail;
 				myBook.bid = results[0].id;
 				myBook.uid = req.session.passport.user._id
-				// console.log(myBook);
 				// res.json(myBook);
 				//
 				Book.find({ bid: myBook.bid, uid: myBook.uid }, (err, book) => {
@@ -176,6 +179,17 @@ function ClickHandler() {
 				res.json(book);
 			}
 		);
+	}
+
+	this.deleteBook = (req, res) => {
+		// console.log('deleteBook');
+		var book = req.body.book;
+		// console.log(book);
+		Book.findByIdAndRemove(book._id)
+			.exec((err, book) => {
+				if (err) throw err;
+				res.json(book)
+			});
 	}
 
 	this.getAllBooks = (req, res) => {

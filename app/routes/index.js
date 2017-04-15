@@ -22,11 +22,9 @@ module.exports = function (app, passport, primus) {
 
 	var clickHandler = new ClickHandler();
 	clickHandler.addDefault();
-	// clickHandler.googleBook('Tarzan');
 
 	app.route('/')
 		.get(function (req, res) {
-			// console.log(req.params);
 			res.sendFile(index);
 		});
 
@@ -88,6 +86,13 @@ module.exports = function (app, passport, primus) {
 	app.route('/update')
 		.post(isLoggedIn, clickHandler.update)
 
+	app.route('/logout')
+		.post(isLoggedIn, (req, res) => {
+			req.logout();
+			res.status(200)
+			res.json({ success: 'Logged out!' });
+		})
+
 	// console.log(primus);
 	primus.on('connection', function connection(spark) {
 		// console.log('new connection ' + spark.id);
@@ -98,6 +103,8 @@ module.exports = function (app, passport, primus) {
 		 */
 		spark.on('data', function received(data) {
 			var sourceId = spark.id;
+			console.log('source id');
+			console.log(sourceId);
 			if (typeof data === 'object') {
 				console.log(spark.id, 'received data:');
 				console.log(typeof data);
@@ -108,7 +115,8 @@ module.exports = function (app, passport, primus) {
 				primus.forEach(function (spark, id, connections) {
 
 					if (sourceId !== spark.id && typeof data !== 'string') {
-						console.log('sending ' + data + ' to ' + spark.id);
+						console.log('sending to ' + spark.id + ' this data:');
+						console.log(data);
 
 						spark.write(data);
 					}
@@ -122,22 +130,6 @@ module.exports = function (app, passport, primus) {
 		.get(isLoggedIn, clickHandler.getAllBooks)
 		.post(isLoggedIn, clickHandler.addBook)
 		.put(isLoggedIn, clickHandler.editBook)
-		// .put(isLoggedIn, clickHandler.googleBook)
-		// .post(isLoggedIn, clickHandler.requestBook)
+		.delete(isLoggedIn, clickHandler.deleteBook)
 
-	// add, get, edit, delete the user poll data
-	// must be authenticated
-	// app.route('/api/:id/:poll')
-	// 	.get(isLoggedIn, clickHandler.getPolls)
-	// 	.put(isLoggedIn, clickHandler.editPoll)
-	// 	.post(isLoggedIn, clickHandler.addPoll)
-	// 	.patch(isLoggedIn, clickHandler.takeAuthPoll)
-	// 	.delete(isLoggedIn, clickHandler.delPoll)
-
-	// exports.logout = (req, res) => {
-	// 	req.logout();
-	// 	return res
-	// 		.status(200)
-	// 		.json({ success: 'Logged out!' });
-	// }
 };

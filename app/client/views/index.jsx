@@ -1,15 +1,5 @@
-/**
- * User Story: I can view all books posted by every user.
- * User Story: I can add a new book.
- * User Story: I can update my settings to store my full name, city, and state.
- * User Story: I can propose a trade and wait for the other user to accept the trade.
- */
-
-/**
- * Send the new book to all clients using primus/websockets
- */
-
 'use strict'
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -79,7 +69,7 @@ export default class Main extends React.Component {
             var auth, books, error, obj, id, name, email, city, state;
             // console.log('parseAuth');
             // console.log(data);
- 
+
             data._id ? id = data._id : id = false;
             data.name ? name = data.name : name = '';
             data.email ? email = data.email : email = '';
@@ -101,67 +91,57 @@ export default class Main extends React.Component {
 
         books = this.state.books
         route = data.route;
-        url = window.location.origin;
+        // url = window.location.origin;
 
         switch (route) {
             case 'signup':
                 // console.log('route: signup');
                 url = '/signup'
-                header.url = url;
                 header.method = 'POST';
-                header.contentType = "application/json";
-                header.dataType = 'json'
-                header.data = JSON.stringify(data);
+                header.url = url;
                 break;
             case 'borrow':
                 // console.log('route: titles');
                 url = '/api/books'
-                header.url = url;
                 header.method = 'PUT';
-                header.contentType = "application/json";
-                header.dataType = 'json'
-                header.data = JSON.stringify(data);
+                header.url = url;
+                break;
+            case 'delete':
+                // console.log('route: titles');
+                url = '/api/books'
+                header.method = 'DELETE';
+                header.url = url;
                 break;
             case 'titles':
                 // console.log('route: titles');
                 url = '/api/books'
-                header.url = url;
                 header.method = 'GET';
-                header.contentType = "application/json";
-                header.dataType = 'json'
-                header.data = JSON.stringify(data);
+                header.url = url;
                 break;
             case 'title':
                 // console.log('route: title');
                 url = '/api/books'
-                header.url = url;
                 header.method = 'POST';
-                header.contentType = "application/json";
-                header.dataType = 'json'
-                header.data = JSON.stringify(data);
+                header.url = url;
                 break;
             case 'update':
                 // console.log('route: update');
                 url = '/update'
-                header.url = url;
                 header.method = 'POST';
-                header.contentType = "application/json";
-                header.dataType = 'json'
-                header.data = JSON.stringify(data);
+                header.url = url;
                 break;
             case 'user':
                 // console.log('route: user');
                 url = '/login';
-                header.url = url;
                 header.method = 'POST';
-                header.contentType = "application/json";
-                header.dataType = 'json'
-                header.data = JSON.stringify(data);
+                header.url = url;
                 break;
             default:
                 break;
         }
-
+        header.contentType = "application/json";
+        header.dataType = 'json'
+        header.data = JSON.stringify(data);
         // console.log('ajax header');
         // console.log(header);
 
@@ -189,13 +169,29 @@ export default class Main extends React.Component {
                         auth = parseAuth(results.user, null);
                         // console.log(auth);
                         break;
+                    case 'delete':
+                        // console.log('delete .then');
+                        reroute = 'user';
+                        book = results;
+                        // console.log(book);
+                        books = this.state.books.filter(obj => {
+                            return obj._id !== book._id;
+                        });
+                        // console.log(books);
+                        auth = parseAuth(this.state.auth);
+                        var data = {
+                            action: 'delete',
+                            book: book
+                        }
+                        this.state.primus.write(data);
+                        break;
                     case 'borrow':
                         // console.log('borrow .then');
                         reroute = 'user';
                         book = results;
                         // console.log(book);
                         books = this.state.books;
-                        books.forEach(obj=>{
+                        books.forEach(obj => {
                             if (obj._id === book._id) {
                                 obj.isAccept = book.isAccept;
                                 obj.isRequest = book.isRequest;
@@ -204,7 +200,11 @@ export default class Main extends React.Component {
                         });
                         // console.log(books);
                         auth = parseAuth(this.state.auth);
-                        this.state.primus.write(book);
+                        var data = {
+                            action: 'borrow',
+                            book: book
+                        }
+                        this.state.primus.write(data);
                         break;
                     case 'title':
                         // console.log('title .then');
@@ -214,7 +214,13 @@ export default class Main extends React.Component {
                         // console.log(book);
 
                         books.push(book);
-                        auth = parseAuth(this.state.auth)
+                        auth = parseAuth(this.state.auth);
+                        var data = {
+                            action: 'add',
+                            book: book
+                        }
+                        this.state.primus.write(data);
+                        // this.state.primus.write(book);
                         // console.log(auth);
                         break;
                     case 'titles':
@@ -269,22 +275,52 @@ export default class Main extends React.Component {
          * Set the primus handler
          */
         var primus = new Primus();
-        primus.on('data', book => {
+        primus.on('data', data => {
             // console.log('primus book');
-            // console.log(book);
-            // console.log(typeof book);
-            if (typeof book === 'object') {
+            // console.log(data);
+            // console.log(typeof data);
+            if (typeof data === 'object') {
                 // console.log('primus setting state');
-                // console.log(book);
-                var books = this.state.books;
-                books.forEach(obj=>{
-                    if (obj._id === book._id) {
-                        obj.isAccept = book.isAccept;
-                        obj.isRequest = book.isRequest;
-                        obj.lendee = book.lendee;
-                    }
-                });
-                this.setState({ books: books })
+                // console.log(data);
+                var action, book, books;
+                action = data.action;
+                book = data.book;
+                switch (action) {
+                    case 'add':
+                        // console.log('primus case add');
+                        books = this.state.books;
+                        books.push(book);
+                        // console.log('books');
+                        // console.log(books);
+                        this.setState({ books: books })
+                        break;
+                    case 'borrow':
+                        // console.log('primus case borrow');
+                        books = this.state.books;
+                        books.forEach(obj => {
+                            if (obj._id === book._id) {
+                                obj.isAccept = book.isAccept;
+                                obj.isRequest = book.isRequest;
+                                obj.lendee = book.lendee;
+                            }
+                        });
+                        // console.log('books');
+                        // console.log(books);
+                        this.setState({ books: books })
+                        break;
+                    case 'delete':
+                        // console.log('primus case delete');
+                        books = this.state.books.filter(obj => {
+                            return obj._id !== book._id;
+                        });
+                        // console.log('books');
+                        // console.log(books);
+                        this.setState({ books: books })
+                        break;
+                }
+                // console.log('books');
+                // console.log(books);
+
             }
         });
         // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });

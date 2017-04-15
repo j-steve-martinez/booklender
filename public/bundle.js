@@ -44,17 +44,6 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * User Story: I can view all books posted by every user.
-	 * User Story: I can add a new book.
-	 * User Story: I can update my settings to store my full name, city, and state.
-	 * User Story: I can propose a trade and wait for the other user to accept the trade.
-	 */
-
-	/**
-	 * Send the new book to all clients using primus/websockets
-	 */
-
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -208,67 +197,57 @@
 
 	            books = this.state.books;
 	            route = data.route;
-	            url = window.location.origin;
+	            // url = window.location.origin;
 
 	            switch (route) {
 	                case 'signup':
 	                    // console.log('route: signup');
 	                    url = '/signup';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'borrow':
 	                    // console.log('route: titles');
 	                    url = '/api/books';
-	                    header.url = url;
 	                    header.method = 'PUT';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
+	                    break;
+	                case 'delete':
+	                    // console.log('route: titles');
+	                    url = '/api/books';
+	                    header.method = 'DELETE';
+	                    header.url = url;
 	                    break;
 	                case 'titles':
 	                    // console.log('route: titles');
 	                    url = '/api/books';
-	                    header.url = url;
 	                    header.method = 'GET';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'title':
 	                    // console.log('route: title');
 	                    url = '/api/books';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'update':
 	                    // console.log('route: update');
 	                    url = '/update';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'user':
 	                    // console.log('route: user');
 	                    url = '/login';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                default:
 	                    break;
 	            }
-
+	            header.contentType = "application/json";
+	            header.dataType = 'json';
+	            header.data = JSON.stringify(data);
 	            // console.log('ajax header');
 	            // console.log(header);
 
@@ -295,6 +274,22 @@
 	                        auth = parseAuth(results.user, null);
 	                        // console.log(auth);
 	                        break;
+	                    case 'delete':
+	                        // console.log('delete .then');
+	                        reroute = 'user';
+	                        book = results;
+	                        // console.log(book);
+	                        books = _this2.state.books.filter(function (obj) {
+	                            return obj._id !== book._id;
+	                        });
+	                        // console.log(books);
+	                        auth = parseAuth(_this2.state.auth);
+	                        var data = {
+	                            action: 'delete',
+	                            book: book
+	                        };
+	                        _this2.state.primus.write(data);
+	                        break;
 	                    case 'borrow':
 	                        // console.log('borrow .then');
 	                        reroute = 'user';
@@ -310,7 +305,11 @@
 	                        });
 	                        // console.log(books);
 	                        auth = parseAuth(_this2.state.auth);
-	                        _this2.state.primus.write(book);
+	                        var data = {
+	                            action: 'borrow',
+	                            book: book
+	                        };
+	                        _this2.state.primus.write(data);
 	                        break;
 	                    case 'title':
 	                        // console.log('title .then');
@@ -321,6 +320,12 @@
 
 	                        books.push(book);
 	                        auth = parseAuth(_this2.state.auth);
+	                        var data = {
+	                            action: 'add',
+	                            book: book
+	                        };
+	                        _this2.state.primus.write(data);
+	                        // this.state.primus.write(book);
 	                        // console.log(auth);
 	                        break;
 	                    case 'titles':
@@ -376,22 +381,51 @@
 	             * Set the primus handler
 	             */
 	            var primus = new Primus();
-	            primus.on('data', function (book) {
+	            primus.on('data', function (data) {
 	                // console.log('primus book');
-	                // console.log(book);
-	                // console.log(typeof book);
-	                if ((typeof book === 'undefined' ? 'undefined' : _typeof(book)) === 'object') {
+	                // console.log(data);
+	                // console.log(typeof data);
+	                if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
 	                    // console.log('primus setting state');
-	                    // console.log(book);
-	                    var books = _this3.state.books;
-	                    books.forEach(function (obj) {
-	                        if (obj._id === book._id) {
-	                            obj.isAccept = book.isAccept;
-	                            obj.isRequest = book.isRequest;
-	                            obj.lendee = book.lendee;
-	                        }
-	                    });
-	                    _this3.setState({ books: books });
+	                    // console.log(data);
+	                    var action, book, books;
+	                    action = data.action;
+	                    book = data.book;
+	                    switch (action) {
+	                        case 'add':
+	                            // console.log('primus case add');
+	                            books = _this3.state.books;
+	                            books.push(book);
+	                            // console.log('books');
+	                            // console.log(books);
+	                            _this3.setState({ books: books });
+	                            break;
+	                        case 'borrow':
+	                            // console.log('primus case borrow');
+	                            books = _this3.state.books;
+	                            books.forEach(function (obj) {
+	                                if (obj._id === book._id) {
+	                                    obj.isAccept = book.isAccept;
+	                                    obj.isRequest = book.isRequest;
+	                                    obj.lendee = book.lendee;
+	                                }
+	                            });
+	                            // console.log('books');
+	                            // console.log(books);
+	                            _this3.setState({ books: books });
+	                            break;
+	                        case 'delete':
+	                            // console.log('primus case delete');
+	                            books = _this3.state.books.filter(function (obj) {
+	                                return obj._id !== book._id;
+	                            });
+	                            // console.log('books');
+	                            // console.log(books);
+	                            _this3.setState({ books: books });
+	                            break;
+	                    }
+	                    // console.log('books');
+	                    // console.log(books);
 	                }
 	            });
 	            // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
@@ -5342,12 +5376,47 @@
 
 	        var _this = _possibleConstructorReturn(this, (User.__proto__ || Object.getPrototypeOf(User)).call(this, props));
 
+	        _this.onClick = _this.onClick.bind(_this);
 	        _this.onSubmit = _this.onSubmit.bind(_this);
 	        _this.onConfirm = _this.onConfirm.bind(_this);
+	        var data = {
+	            isConfirm: false,
+	            book: {}
+	        };
+	        _this.state = data;
 	        return _this;
 	    }
 
 	    _createClass(User, [{
+	        key: 'onClick',
+	        value: function onClick(e) {
+	            // console.log('onClick');
+	            // console.log(e.target.id);
+	            e.preventDefault();
+
+	            var uid, book;
+	            book = this.props.books.filter(function (obj) {
+	                return obj._id === e.target.id;
+	            })[0];
+	            // console.log(book);
+	            var data = {
+	                isConfirm: true,
+	                book: book
+	            };
+	            function findPos(obj) {
+	                var curtop = 0;
+	                if (obj.offsetParent) {
+	                    do {
+	                        curtop += obj.offsetTop;
+	                    } while (obj = obj.offsetParent);
+	                    return [curtop];
+	                }
+	            }
+	            window.scrollTo(0, findPos(document.getElementById("confirm")));
+	            // scrollTo(0, 100);
+	            this.setState(data);
+	        }
+	    }, {
 	        key: 'onSubmit',
 	        value: function onSubmit(e) {
 	            e.preventDefault();
@@ -5356,6 +5425,7 @@
 	            // console.log(e.target.elements.title.value);
 	            var data, title;
 	            title = e.target.elements.title.value;
+	            e.target.elements.title.value = '';
 	            if (title !== '') {
 	                data = {
 	                    route: 'title',
@@ -5369,10 +5439,13 @@
 	        key: 'onConfirm',
 	        value: function onConfirm(e) {
 	            e.preventDefault();
+	            // console.log('onConfirm');
 	            // console.log(e.target.id);
 	            // console.log(e.target.name);
+	            // console.log(this.state);
 	            var book, route, data;
 	            book = this.props.books.filter(function (obj) {
+	                // console.log(obj);
 	                return obj._id === e.target.name;
 	            })[0];
 	            if (e.target.id === 'yes') {
@@ -5384,11 +5457,17 @@
 	                book.lendee = '';
 	            }
 	            // console.log(book);
+	            route = 'borrow';
+	            if (e.target.id === 'delete') {
+	                route = 'delete';
+	            }
 	            data = {
-	                route: 'borrow',
+	                route: route,
 	                book: book
 	            };
+	            // console.log(data);
 	            this.props.ajax(data);
+	            this.setState({ isConfirm: false, book: {} });
 	        }
 	    }, {
 	        key: 'render',
@@ -5397,6 +5476,7 @@
 
 	            // console.log('User');
 	            // console.log(this.props);
+	            // console.log(this.state);
 	            var books, booksHtml, borrowed, borrowedHtml, requests, requestsHtml, name, email, city, state;
 
 	            /**
@@ -5415,7 +5495,13 @@
 	                booksHtml = books.map(function (obj, key) {
 	                    // console.log(key);
 	                    // console.log(obj._id);
-	                    var html = _react2.default.createElement('img', { key: key, id: obj.bid, src: obj.thumbnail, alt: obj.title, height: '180', width: '128' });
+	                    var html =
+	                    // <img key={key} id={obj.bid} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
+	                    _react2.default.createElement(
+	                        'a',
+	                        { key: key, onClick: _this2.onClick, href: '#' },
+	                        _react2.default.createElement('img', { id: obj._id, src: obj.thumbnail, alt: obj.title, height: '180', width: '128' })
+	                    );
 	                    return html;
 	                });
 
@@ -5492,6 +5578,45 @@
 	                requestsHtml = null;
 	            }
 
+	            if (this.state.isConfirm) {
+	                if (this.state.book.isAccept === true || this.state.book.isRequest) {
+	                    confirm = _react2.default.createElement(
+	                        'div',
+	                        { className: 'alert alert-danger alert-dismissible', role: 'alert' },
+	                        _react2.default.createElement(
+	                            'strong',
+	                            null,
+	                            this.state.book.title
+	                        ),
+	                        ' has been requested or is on loan. Try again later.'
+	                    );
+	                } else {
+	                    confirm = _react2.default.createElement(
+	                        'form',
+	                        { className: 'form-horizontal' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { className: 'well text-danger' },
+	                            'Delete: ',
+	                            this.state.book.title,
+	                            '? '
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: this.onConfirm, name: this.state.book._id, id: 'delete', className: 'btn btn-success btn-lg' },
+	                            'Delete'
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: this.onConfirm, name: this.state.book._id, id: 'cancel', className: 'btn btn-danger btn-lg' },
+	                            'Cancel'
+	                        )
+	                    );
+	                }
+	            } else {
+	                confirm = null;
+	            }
+
 	            this.props.auth.name ? name = this.props.auth.name : name = null;
 	            this.props.auth.email ? email = this.props.auth.email : email = null;
 	            this.props.auth.city ? city = 'City: ' + this.props.auth.city : city = null;
@@ -5520,7 +5645,8 @@
 	                    null,
 	                    state
 	                ),
-	                _react2.default.createElement('br', null),
+	                _react2.default.createElement('br', { id: 'confirm' }),
+	                confirm,
 	                requestsHtml,
 	                _react2.default.createElement(
 	                    'div',
@@ -5544,7 +5670,7 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
-	                            { type: 'submit', className: 'btn btn-primary' },
+	                            { id: 'add', type: 'submit', className: 'btn btn-primary' },
 	                            'Submit'
 	                        )
 	                    )

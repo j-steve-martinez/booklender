@@ -3,8 +3,41 @@ import React from 'react';
 export default class User extends React.Component {
     constructor(props) {
         super(props);
+        this.onClick = this.onClick.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onConfirm = this.onConfirm.bind(this);
+        var data = {
+            isConfirm: false,
+            book: {}
+        };
+        this.state = data;
+    }
+    onClick(e) {
+        // console.log('onClick');
+        // console.log(e.target.id);
+        e.preventDefault();
+
+        var uid, book;
+        book = this.props.books.filter(obj => {
+            return obj._id === e.target.id
+        })[0];
+        // console.log(book);
+        var data = {
+            isConfirm: true,
+            book: book
+        };
+        function findPos(obj) {
+            var curtop = 0;
+            if (obj.offsetParent) {
+                do {
+                    curtop += obj.offsetTop;
+                } while (obj = obj.offsetParent);
+                return [curtop];
+            }
+        }
+        window.scrollTo(0, findPos(document.getElementById("confirm")));
+        // scrollTo(0, 100);
+        this.setState(data);
     }
     onSubmit(e) {
         e.preventDefault();
@@ -13,6 +46,7 @@ export default class User extends React.Component {
         // console.log(e.target.elements.title.value);
         var data, title;
         title = e.target.elements.title.value;
+        e.target.elements.title.value = '';
         if (title !== '') {
             data = {
                 route: 'title',
@@ -24,10 +58,13 @@ export default class User extends React.Component {
     }
     onConfirm(e) {
         e.preventDefault();
+        // console.log('onConfirm');
         // console.log(e.target.id);
         // console.log(e.target.name);
+        // console.log(this.state);
         var book, route, data;
         book = this.props.books.filter(obj => {
+            // console.log(obj);
             return obj._id === e.target.name;
         })[0];
         if (e.target.id === 'yes') {
@@ -39,15 +76,22 @@ export default class User extends React.Component {
             book.lendee = '';
         }
         // console.log(book);
+        route = 'borrow';
+        if (e.target.id === 'delete') {
+            route = 'delete';
+        } 
         data = {
-            route: 'borrow',
+            route: route,
             book: book
         }
+        // console.log(data);
         this.props.ajax(data);
+        this.setState({isConfirm: false, book: {} });
     }
     render() {
         // console.log('User');
         // console.log(this.props);
+        // console.log(this.state);
         var books, booksHtml, borrowed, borrowedHtml, requests, requestsHtml, name, email, city, state;
 
         /**
@@ -67,7 +111,10 @@ export default class User extends React.Component {
                 // console.log(key);
                 // console.log(obj._id);
                 var html = (
-                    <img key={key} id={obj.bid} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
+                    // <img key={key} id={obj.bid} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
+                    <a key={key} onClick={this.onClick} href='#' >
+                        <img id={obj._id} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
+                    </a>
                 )
                 return html;
             })
@@ -124,6 +171,26 @@ export default class User extends React.Component {
             requestsHtml = null;
         }
 
+        if (this.state.isConfirm) {
+            if (this.state.book.isAccept === true || this.state.book.isRequest) {
+                confirm = (
+                    <div className="alert alert-danger alert-dismissible" role="alert">
+                        <strong>{this.state.book.title}</strong> has been requested or is on loan. Try again later.
+                    </div>
+                )
+            } else {
+                confirm = (
+                    <form className="form-horizontal">
+                        <label className='well text-danger' >Delete: {this.state.book.title}? </label>
+                        <button onClick={this.onConfirm} name={this.state.book._id} id='delete' className="btn btn-success btn-lg" >Delete</button>
+                        <button onClick={this.onConfirm} name={this.state.book._id} id='cancel' className="btn btn-danger btn-lg" >Cancel</button>
+                    </form>
+                )
+            }
+        } else {
+            confirm = null;
+        }
+
         this.props.auth.name ? name = this.props.auth.name : name = null;
         this.props.auth.email ? email = this.props.auth.email : email = null;
         this.props.auth.city ? city = 'City: ' + this.props.auth.city : city = null;
@@ -135,7 +202,8 @@ export default class User extends React.Component {
                 <h2>{email}</h2>
                 <h3>{city}</h3>
                 <h3>{state}</h3>
-                <br />
+                <br id='confirm' />
+                {confirm}
                 {requestsHtml}
                 <div>
                     <form onSubmit={this.onSubmit} >
@@ -143,7 +211,7 @@ export default class User extends React.Component {
                             <label htmlFor="title"><h4 className='text-primary' >Book Title:</h4></label>
                             <input type="text" className="form-control" id="title" />
                         </div>
-                        <button type="submit" className="btn btn-primary">Submit</button>
+                        <button id='add' type="submit" className="btn btn-primary">Submit</button>
                     </form>
                 </div>
                 <br />

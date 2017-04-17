@@ -102,7 +102,7 @@ module.exports = function (app, passport, primus) {
 		 * Wait for all data to be received from the client
 		 */
 		spark.on('data', function received(data) {
-			// var sourceId = spark.id;
+			var sourceId = spark.id;
 			// console.log('source id');
 			// console.log(sourceId);
 			if (typeof data === 'object') {

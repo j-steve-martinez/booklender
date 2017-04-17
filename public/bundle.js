@@ -5466,7 +5466,7 @@
 /* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -5477,6 +5477,10 @@
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _tweet = __webpack_require__(186);
+
+	var _tweet2 = _interopRequireDefault(_tweet);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5496,23 +5500,29 @@
 	    }
 
 	    _createClass(Start, [{
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
 	            // console.log('Start props');
 	            // console.log(this.props);
 	            return _react2.default.createElement(
-	                "div",
-	                { className: "jumbotron" },
+	                'div',
+	                { className: 'jumbotron' },
 	                _react2.default.createElement(
-	                    "h1",
+	                    'h1',
 	                    null,
-	                    "Welcome"
+	                    'Welcome'
 	                ),
 	                _react2.default.createElement(
-	                    "h3",
+	                    'h2',
 	                    null,
-	                    "Please Login or Signup to start lending books."
-	                )
+	                    'Please Login or Signup to start lending books.'
+	                ),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    'Tweet your friends and let them know!'
+	                ),
+	                _react2.default.createElement(_tweet2.default, null)
 	            );
 	        }
 	    }]);
@@ -5621,30 +5631,33 @@
 	            // console.log(e.target.id);
 	            // console.log(e.target.name);
 	            // console.log(this.state);
-	            var book, route, data;
-	            book = this.props.books.filter(function (obj) {
-	                // console.log(obj);
-	                return obj._id === e.target.name;
-	            })[0];
-	            if (e.target.id === 'yes') {
-	                book.isAccept = true;
-	                book.isRequest = true;
-	            } else {
-	                book.isAccept = false;
-	                book.isRequest = false;
-	                book.lendee = '';
+	            // var book, route, data;
+	            if (e.target.id !== 'cancel') {
+
+	                book = this.props.books.filter(function (obj) {
+	                    // console.log(obj);
+	                    return obj._id === e.target.name;
+	                })[0];
+	                if (e.target.id === 'yes') {
+	                    book.isAccept = true;
+	                    book.isRequest = true;
+	                } else {
+	                    book.isAccept = false;
+	                    book.isRequest = false;
+	                    book.lendee = '';
+	                }
+	                // console.log(book);
+	                route = 'borrow';
+	                if (e.target.id === 'delete') {
+	                    route = 'delete';
+	                }
+	                data = {
+	                    route: route,
+	                    book: book
+	                };
+	                // console.log(data);
+	                this.props.ajax(data);
 	            }
-	            // console.log(book);
-	            route = 'borrow';
-	            if (e.target.id === 'delete') {
-	                route = 'delete';
-	            }
-	            data = {
-	                route: route,
-	                book: book
-	            };
-	            // console.log(data);
-	            this.props.ajax(data);
 	            this.setState({ isConfirm: false, book: {} });
 	        }
 	    }, {
@@ -23250,6 +23263,61 @@
 
 	module.exports = ReactDOMInvalidARIAHook;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Tweet = function (_React$Component) {
+	    _inherits(Tweet, _React$Component);
+
+	    function Tweet(props) {
+	        _classCallCheck(this, Tweet);
+
+	        return _possibleConstructorReturn(this, (Tweet.__proto__ || Object.getPrototypeOf(Tweet)).call(this, props));
+	    }
+
+	    _createClass(Tweet, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var url = window.location.href;
+	            var elem = document.getElementById('twit-share');
+	            var data = {};
+	            data.text = 'Come Join The Book Lending Club: ';
+	            data.size = 'large';
+	            twttr.widgets.createShareButton(url, elem, data);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement('a', { id: 'twit-share' });
+	        }
+	    }]);
+
+	    return Tweet;
+	}(_react2.default.Component);
+
+	exports.default = Tweet;
 
 /***/ }
 /******/ ]);

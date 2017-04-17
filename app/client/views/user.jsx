@@ -62,31 +62,34 @@ export default class User extends React.Component {
         // console.log(e.target.id);
         // console.log(e.target.name);
         // console.log(this.state);
-        var book, route, data;
-        book = this.props.books.filter(obj => {
-            // console.log(obj);
-            return obj._id === e.target.name;
-        })[0];
-        if (e.target.id === 'yes') {
-            book.isAccept = true;
-            book.isRequest = true;
-        } else {
-            book.isAccept = false;
-            book.isRequest = false;
-            book.lendee = '';
+        // var book, route, data;
+        if (e.target.id !== 'cancel') {
+
+            book = this.props.books.filter(obj => {
+                // console.log(obj);
+                return obj._id === e.target.name;
+            })[0];
+            if (e.target.id === 'yes') {
+                book.isAccept = true;
+                book.isRequest = true;
+            } else {
+                book.isAccept = false;
+                book.isRequest = false;
+                book.lendee = '';
+            }
+            // console.log(book);
+            route = 'borrow';
+            if (e.target.id === 'delete') {
+                route = 'delete';
+            }
+            data = {
+                route: route,
+                book: book
+            }
+            // console.log(data);
+            this.props.ajax(data);
         }
-        // console.log(book);
-        route = 'borrow';
-        if (e.target.id === 'delete') {
-            route = 'delete';
-        } 
-        data = {
-            route: route,
-            book: book
-        }
-        // console.log(data);
-        this.props.ajax(data);
-        this.setState({isConfirm: false, book: {} });
+        this.setState({ isConfirm: false, book: {} });
     }
     render() {
         // console.log('User');

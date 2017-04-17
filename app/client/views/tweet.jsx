@@ -5,13 +5,10 @@ export default class Tweet extends React.Component {
         super(props);
     }
     componentDidMount() {
-        console.log(this.props.poll);
-        var id = this.props.poll._id;
-        var name = 'New Poll: ' + this.props.poll.name;
-        var url = window.location.href + '?poll=' + id;
+        var url = window.location.href;
         var elem = document.getElementById('twit-share');
         var data = {};
-        data.text = name;
+        data.text = 'Come Join The Book Lending Club: ';
         data.size = 'large';
         twttr.widgets.createShareButton(url, elem, data);
     }

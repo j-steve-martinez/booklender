@@ -39,25 +39,21 @@ export default class About extends React.Component {
         </p>
         <div className='text-center' >
           <div>
-            {/*<span className="credit">Created By: </span>*/}
             <a className='link' href="https://github.com/j-steve-martinez" target="_blank">
               J. Steve Martinez
             </a>
           </div>
           <div>
-            {/*<div className="credit">Heroku:</div>*/}
             <a className='link' href={herokuURL} target="_blank">
               Heroku
             </a>
           </div>
           <div>
-            {/*<div className="credit">GitHub:</div>*/}
             <a className='link' href={githubURL} target="_blank">
               Github
             </a>
           </div>
         </div>
-
       </div>
     )
   }

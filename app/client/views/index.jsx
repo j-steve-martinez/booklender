@@ -3,6 +3,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+import About from './about.jsx';
 import Books from './books.jsx';
 import Config from './config.jsx'
 import Header from './header.jsx';
@@ -353,6 +354,9 @@ export default class Main extends React.Component {
                 break;
             case 'books':
                 page = <Books ajax={this.ajax} auth={this.state.auth} books={this.state.books} />
+                break;
+            case 'about':
+                page = <About />
                 break;
             default:
                 page = <Start />

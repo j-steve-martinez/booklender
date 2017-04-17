@@ -1,56 +1,64 @@
 import React from 'react';
 
 export default class About extends React.Component {
-  render(){
+  render() {
+    var fccProjectURL, fccProjectName, appName, herokuURL, githubURL;
+    fccProjectName = 'Manage a Book Trading Club';
+    fccProjectURL = "https://www.freecodecamp.com/challenges/manage-a-book-trading-club";
+    appName = 'Book Lender';
+    herokuURL = "https://booklender.herokuapp.com/";
+    githubURL = "https://github.com/j-steve-martinez/booklender";
+
     return (
-      <Body title="My App">
-        <p className='about bg-warning'>
-          This web site is for the <a href="https://www.freecodecamp.com" target="_blank">freeCodeCamp </a>
+      <div className='jumbotron' >
+        <h1>{appName}</h1>
+        <p>
+          This site is for the <a href="https://www.freecodecamp.com" target="_blank">freeCodeCamp </a>
           Dynamic Web Applications Project:
-          <a href="https://www.freecodecamp.com/challenges/build-a-voting-app" target="_blank"> Build a Voting App</a>.
+          <a href={fccProjectURL} target="_blank"> {fccProjectName}</a>.
           <br></br>
           <br></br>
-          It is a full stack web application that uses
-          <a href="https://www.mongodb.com/" target="_blank"> mongoDB </a>
-          for the back end database,
-          <a href="https://nodejs.org" target="_blank"> Node.js </a>
-          for the web server and
-          <a href="https://facebook.github.io/react/" target="_blanks"> React.js </a>
-          to render html in the client browser.
-          <br></br>
-          <br></br>
-          The app also uses
-          <a href="http://getbootstrap.com" target="_blank"> Bootstrap </a>
-          for the style sheets and
-          <a href="http://www.chartjs.org" target="_blank"> Chart.js </a> to render the data in a bar chart.
-          <br></br>
-          <br></br>
+          It is a full stack web application that uses:
+          <ul>
+            <li>
+              <a href="https://www.mongodb.com/" target="_blank">Database: mongoDB </a>
+            </li>
+            <li>
+              <a href="https://nodejs.org" target="_blank">Server: Node.js </a>
+            </li>
+            <li>
+              <a href="https://facebook.github.io/react/" target="_blanks">Views: React.js </a>
+            </li>
+            <li>
+              <a href="http://getbootstrap.com" target="_blank">Stylesheets: Bootstrap </a>
+            </li>
+          </ul>
           <span id='warning'>
             This application is for educational purposes only.  Any and all data may be removed at anytime without warning.
           </span>
         </p>
-        <div id="credits">
+        <div className='text-center' >
           <div>
-            <span className="credit">Created By: </span>
+            {/*<span className="credit">Created By: </span>*/}
             <a className='link' href="https://github.com/j-steve-martinez" target="_blank">
               J. Steve Martinez
             </a>
           </div>
           <div>
-            <div className="credit">Heroku:</div>
-            <a className='link' href="https://my-app-jsm.herokuapp.com/">
-              https://my-app-jsm.herokuapp.com
+            {/*<div className="credit">Heroku:</div>*/}
+            <a className='link' href={herokuURL} target="_blank">
+              Heroku
             </a>
           </div>
           <div>
-            <div className="credit">GitHub:</div>
-            <a className='link' href="https://github.com/j-steve-martinez/my-app">
-              https://github.com/j-steve-martinez/my-app
+            {/*<div className="credit">GitHub:</div>*/}
+            <a className='link' href={githubURL} target="_blank">
+              Github
             </a>
           </div>
         </div>
 
-      </Body>
+      </div>
     )
   }
 }

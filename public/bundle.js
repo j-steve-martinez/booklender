@@ -44,17 +44,6 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * User Story: I can view all books posted by every user.
-	 * User Story: I can add a new book.
-	 * User Story: I can update my settings to store my full name, city, and state.
-	 * User Story: I can propose a trade and wait for the other user to accept the trade.
-	 */
-
-	/**
-	 * Send the new book to all clients using primus/websockets
-	 */
-
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -64,6 +53,10 @@
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _about = __webpack_require__(185);
+
+	var _about2 = _interopRequireDefault(_about);
 
 	var _books = __webpack_require__(1);
 
@@ -208,67 +201,57 @@
 
 	            books = this.state.books;
 	            route = data.route;
-	            url = window.location.origin;
+	            // url = window.location.origin;
 
 	            switch (route) {
 	                case 'signup':
 	                    // console.log('route: signup');
 	                    url = '/signup';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'borrow':
 	                    // console.log('route: titles');
 	                    url = '/api/books';
-	                    header.url = url;
 	                    header.method = 'PUT';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
+	                    break;
+	                case 'delete':
+	                    // console.log('route: titles');
+	                    url = '/api/books';
+	                    header.method = 'DELETE';
+	                    header.url = url;
 	                    break;
 	                case 'titles':
 	                    // console.log('route: titles');
 	                    url = '/api/books';
-	                    header.url = url;
 	                    header.method = 'GET';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'title':
 	                    // console.log('route: title');
 	                    url = '/api/books';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'update':
 	                    // console.log('route: update');
 	                    url = '/update';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                case 'user':
 	                    // console.log('route: user');
 	                    url = '/login';
-	                    header.url = url;
 	                    header.method = 'POST';
-	                    header.contentType = "application/json";
-	                    header.dataType = 'json';
-	                    header.data = JSON.stringify(data);
+	                    header.url = url;
 	                    break;
 	                default:
 	                    break;
 	            }
-
+	            header.contentType = "application/json";
+	            header.dataType = 'json';
+	            header.data = JSON.stringify(data);
 	            // console.log('ajax header');
 	            // console.log(header);
 
@@ -295,6 +278,22 @@
 	                        auth = parseAuth(results.user, null);
 	                        // console.log(auth);
 	                        break;
+	                    case 'delete':
+	                        // console.log('delete .then');
+	                        reroute = 'user';
+	                        book = results;
+	                        // console.log(book);
+	                        books = _this2.state.books.filter(function (obj) {
+	                            return obj._id !== book._id;
+	                        });
+	                        // console.log(books);
+	                        auth = parseAuth(_this2.state.auth);
+	                        var data = {
+	                            action: 'delete',
+	                            book: book
+	                        };
+	                        _this2.state.primus.write(data);
+	                        break;
 	                    case 'borrow':
 	                        // console.log('borrow .then');
 	                        reroute = 'user';
@@ -310,7 +309,11 @@
 	                        });
 	                        // console.log(books);
 	                        auth = parseAuth(_this2.state.auth);
-	                        _this2.state.primus.write(book);
+	                        var data = {
+	                            action: 'borrow',
+	                            book: book
+	                        };
+	                        _this2.state.primus.write(data);
 	                        break;
 	                    case 'title':
 	                        // console.log('title .then');
@@ -321,6 +324,12 @@
 
 	                        books.push(book);
 	                        auth = parseAuth(_this2.state.auth);
+	                        var data = {
+	                            action: 'add',
+	                            book: book
+	                        };
+	                        _this2.state.primus.write(data);
+	                        // this.state.primus.write(book);
 	                        // console.log(auth);
 	                        break;
 	                    case 'titles':
@@ -376,22 +385,51 @@
 	             * Set the primus handler
 	             */
 	            var primus = new Primus();
-	            primus.on('data', function (book) {
+	            primus.on('data', function (data) {
 	                // console.log('primus book');
-	                // console.log(book);
-	                // console.log(typeof book);
-	                if ((typeof book === 'undefined' ? 'undefined' : _typeof(book)) === 'object') {
+	                // console.log(data);
+	                // console.log(typeof data);
+	                if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
 	                    // console.log('primus setting state');
-	                    // console.log(book);
-	                    var books = _this3.state.books;
-	                    books.forEach(function (obj) {
-	                        if (obj._id === book._id) {
-	                            obj.isAccept = book.isAccept;
-	                            obj.isRequest = book.isRequest;
-	                            obj.lendee = book.lendee;
-	                        }
-	                    });
-	                    _this3.setState({ books: books });
+	                    // console.log(data);
+	                    var action, book, books;
+	                    action = data.action;
+	                    book = data.book;
+	                    switch (action) {
+	                        case 'add':
+	                            // console.log('primus case add');
+	                            books = _this3.state.books;
+	                            books.push(book);
+	                            // console.log('books');
+	                            // console.log(books);
+	                            _this3.setState({ books: books });
+	                            break;
+	                        case 'borrow':
+	                            // console.log('primus case borrow');
+	                            books = _this3.state.books;
+	                            books.forEach(function (obj) {
+	                                if (obj._id === book._id) {
+	                                    obj.isAccept = book.isAccept;
+	                                    obj.isRequest = book.isRequest;
+	                                    obj.lendee = book.lendee;
+	                                }
+	                            });
+	                            // console.log('books');
+	                            // console.log(books);
+	                            _this3.setState({ books: books });
+	                            break;
+	                        case 'delete':
+	                            // console.log('primus case delete');
+	                            books = _this3.state.books.filter(function (obj) {
+	                                return obj._id !== book._id;
+	                            });
+	                            // console.log('books');
+	                            // console.log(books);
+	                            _this3.setState({ books: books });
+	                            break;
+	                    }
+	                    // console.log('books');
+	                    // console.log(books);
 	                }
 	            });
 	            // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
@@ -426,6 +464,9 @@
 	                    break;
 	                case 'books':
 	                    page = React.createElement(_books2.default, { ajax: this.ajax, auth: this.state.auth, books: this.state.books });
+	                    break;
+	                case 'about':
+	                    page = React.createElement(_about2.default, null);
 	                    break;
 	                default:
 	                    page = React.createElement(_start2.default, null);
@@ -5005,6 +5046,20 @@
 	                            "a",
 	                            { id: "start", onClick: this.cH, className: "navbar-brand", href: "#" },
 	                            "Book Lender"
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        "ul",
+	                        { className: "nav navbar-nav navbar-left" },
+	                        _react2.default.createElement(
+	                            "li",
+	                            null,
+	                            _react2.default.createElement(
+	                                "a",
+	                                { id: "about", onClick: this.cH, href: "#" },
+	                                _react2.default.createElement("span", { className: "glyphicon glyphicon-question-sign" }),
+	                                " About"
+	                            )
 	                        )
 	                    ),
 	                    navs
@@ -23038,6 +23093,163 @@
 
 	module.exports = ReactDOMInvalidARIAHook;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 185 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var About = function (_React$Component) {
+	  _inherits(About, _React$Component);
+
+	  function About() {
+	    _classCallCheck(this, About);
+
+	    return _possibleConstructorReturn(this, (About.__proto__ || Object.getPrototypeOf(About)).apply(this, arguments));
+	  }
+
+	  _createClass(About, [{
+	    key: 'render',
+	    value: function render() {
+	      var fccProjectURL, fccProjectName, appName, herokuURL, githubURL;
+	      fccProjectName = 'Manage a Book Trading Club';
+	      fccProjectURL = "https://www.freecodecamp.com/challenges/manage-a-book-trading-club";
+	      appName = 'Book Lender';
+	      herokuURL = "https://booklender.herokuapp.com/";
+	      githubURL = "https://github.com/j-steve-martinez/booklender";
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'jumbotron' },
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          appName
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'This site is for the ',
+	          _react2.default.createElement(
+	            'a',
+	            { href: 'https://www.freecodecamp.com', target: '_blank' },
+	            'freeCodeCamp '
+	          ),
+	          'Dynamic Web Applications Project:',
+	          _react2.default.createElement(
+	            'a',
+	            { href: fccProjectURL, target: '_blank' },
+	            ' ',
+	            fccProjectName
+	          ),
+	          '.',
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement('br', null),
+	          'It is a full stack web application that uses:',
+	          _react2.default.createElement(
+	            'ul',
+	            null,
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                'a',
+	                { href: 'https://www.mongodb.com/', target: '_blank' },
+	                'Database: mongoDB '
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                'a',
+	                { href: 'https://nodejs.org', target: '_blank' },
+	                'Server: Node.js '
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                'a',
+	                { href: 'https://facebook.github.io/react/', target: '_blanks' },
+	                'Views: React.js '
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                'a',
+	                { href: 'http://getbootstrap.com', target: '_blank' },
+	                'Stylesheets: Bootstrap '
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { id: 'warning' },
+	            'This application is for educational purposes only.  Any and all data may be removed at anytime without warning.'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'text-center' },
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              'a',
+	              { className: 'link', href: 'https://github.com/j-steve-martinez', target: '_blank' },
+	              'J. Steve Martinez'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              'a',
+	              { className: 'link', href: herokuURL, target: '_blank' },
+	              'Heroku'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              'a',
+	              { className: 'link', href: githubURL, target: '_blank' },
+	              'Github'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return About;
+	}(_react2.default.Component);
+
+	exports.default = About;
 
 /***/ }
 /******/ ]);

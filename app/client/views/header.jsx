@@ -7,7 +7,7 @@ export default class Header extends React.Component {
         super(props);
         this.cH = this.cH.bind(this);
     }
-    cH(e){
+    cH(e) {
         // console.log('Header cH');
         // console.log(e.target.id);
         e.preventDefault();
@@ -56,6 +56,9 @@ export default class Header extends React.Component {
                     <div className="navbar-header">
                         <a id="start" onClick={this.cH} className="navbar-brand" href="#">Book Lender</a>
                     </div>
+                    <ul className="nav navbar-nav navbar-left">
+                        <li><a id="about" onClick={this.cH} href="#"><span className="glyphicon glyphicon-question-sign"></span> About</a></li>
+                    </ul>
                     {navs}
                 </div>
             </nav>

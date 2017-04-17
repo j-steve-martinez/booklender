@@ -27,7 +27,7 @@ export default class Login extends React.Component {
         // console.log('Login');
         // console.log(this.props);
         return (
-            <div>
+            <div className='jumbotron' >
                 <h1>Login</h1>
                 <form onSubmit={this.submit} >
                     <div className="form-group">

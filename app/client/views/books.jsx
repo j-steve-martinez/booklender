@@ -95,7 +95,7 @@ export default class Books extends React.Component {
         }
         return (
             <div className="jumbotron" >
-                <h2 id='title' >Available Books</h2>
+                <h1 id='title' >Available Books</h1>
                 {confirm}
                 <br />
                 {books}

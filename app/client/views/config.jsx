@@ -41,7 +41,7 @@ export default class Config extends React.Component {
         state = this.props.auth.state;
 
         return (
-            <div>
+            <div className='jumbotron'>
                 <h1>Update Your Profile</h1>
                 <form onSubmit={this.submit} >
                     <div className="form-group">

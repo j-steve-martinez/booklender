@@ -40,7 +40,7 @@ export default class Signup extends React.Component {
             )
         }
         return (
-            <div>
+            <div className='jumbotron'>
                 <h1>Signup</h1>
                 <form onSubmit={this.submit} >
                     {error}

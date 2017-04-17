@@ -587,8 +587,8 @@
 	          appName
 	        ),
 	        _react2.default.createElement(
-	          'p',
-	          null,
+	          'div',
+	          { id: 'about-body' },
 	          'This site is for the ',
 	          _react2.default.createElement(
 	            'a',
@@ -654,9 +654,9 @@
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'text-center' },
+	          { id: 'about-footer', className: 'text-center' },
 	          _react2.default.createElement(
-	            'div',
+	            'span',
 	            null,
 	            _react2.default.createElement(
 	              'a',
@@ -665,7 +665,12 @@
 	            )
 	          ),
 	          _react2.default.createElement(
-	            'div',
+	            'span',
+	            null,
+	            ' | '
+	          ),
+	          _react2.default.createElement(
+	            'span',
 	            null,
 	            _react2.default.createElement(
 	              'a',
@@ -674,7 +679,12 @@
 	            )
 	          ),
 	          _react2.default.createElement(
-	            'div',
+	            'span',
+	            null,
+	            ' | '
+	          ),
+	          _react2.default.createElement(
+	            'span',
 	            null,
 	            _react2.default.createElement(
 	              'a',
@@ -4949,7 +4959,7 @@
 	        key: 'submit',
 	        value: function submit(e) {
 	            e.preventDefault();
-	            console.log('Config submit');
+	            // console.log('Config submit');
 	            // console.log(e.target.elements);
 	            // console.log(e.target.elements.name.value);
 	            // console.log(e.target.elements.email.value);
@@ -4969,14 +4979,14 @@
 	                city: city,
 	                state: state
 	            };
-	            console.log(data);
+	            // console.log(data);
 	            this.props.ajax(data);
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log('Config');
-	            console.log(this.props);
+	            // console.log('Config');
+	            // console.log(this.props);
 	            var name, email, city, state;
 	            name = this.props.auth.name;
 	            email = this.props.auth.email;
@@ -5150,6 +5160,16 @@
 	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-log-out" }),
 	                        " Logout"
 	                    )
+	                ),
+	                _react2.default.createElement(
+	                    "li",
+	                    null,
+	                    _react2.default.createElement(
+	                        "a",
+	                        { id: "about", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-question-sign" }),
+	                        " About"
+	                    )
 	                )
 	            );
 	            var login = _react2.default.createElement(
@@ -5173,6 +5193,16 @@
 	                        { id: "login", onClick: this.cH, href: "#" },
 	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-log-in" }),
 	                        " Login"
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    "li",
+	                    null,
+	                    _react2.default.createElement(
+	                        "a",
+	                        { id: "about", onClick: this.cH, href: "#" },
+	                        _react2.default.createElement("span", { className: "glyphicon glyphicon-question-sign" }),
+	                        " About"
 	                    )
 	                )
 	            );
@@ -5203,20 +5233,6 @@
 	                            "a",
 	                            { id: "start", onClick: this.cH, className: "navbar-brand", href: "#" },
 	                            "Book Lender"
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        "ul",
-	                        { className: "nav navbar-nav navbar-left" },
-	                        _react2.default.createElement(
-	                            "li",
-	                            null,
-	                            _react2.default.createElement(
-	                                "a",
-	                                { id: "about", onClick: this.cH, href: "#" },
-	                                _react2.default.createElement("span", { className: "glyphicon glyphicon-question-sign" }),
-	                                " About"
-	                            )
 	                        )
 	                    ),
 	                    navs
@@ -5807,34 +5823,43 @@
 	            } else {
 	                confirm = null;
 	            }
-
+	            var location, city, state;
+	            location = null;
+	            city = this.props.auth.city;
+	            state = this.props.auth.state;
 	            this.props.auth.name ? name = this.props.auth.name : name = null;
 	            this.props.auth.email ? email = this.props.auth.email : email = null;
-	            this.props.auth.city ? city = 'City: ' + this.props.auth.city : city = null;
-	            this.props.auth.state ? state = 'State: ' + this.props.auth.state : state = null;
+
+	            if (city && state) {
+	                location = city + ', ' + state;
+	            } else if (city) {
+	                location = city;
+	            } else if (state) {
+	                location = state;
+	            }
 
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
-	                    'h1',
-	                    null,
-	                    name
-	                ),
-	                _react2.default.createElement(
-	                    'h2',
-	                    null,
-	                    email
+	                    'div',
+	                    { className: 'page-header' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        email,
+	                        ' ',
+	                        _react2.default.createElement(
+	                            'small',
+	                            null,
+	                            name
+	                        )
+	                    )
 	                ),
 	                _react2.default.createElement(
 	                    'h3',
 	                    null,
-	                    city
-	                ),
-	                _react2.default.createElement(
-	                    'h3',
-	                    null,
-	                    state
+	                    location
 	                ),
 	                _react2.default.createElement('br', { id: 'confirm' }),
 	                confirm,
@@ -5853,7 +5878,7 @@
 	                                { htmlFor: 'title' },
 	                                _react2.default.createElement(
 	                                    'h4',
-	                                    { className: 'text-primary' },
+	                                    null,
 	                                    'Book Title:'
 	                                )
 	                            ),

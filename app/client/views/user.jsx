@@ -193,25 +193,34 @@ export default class User extends React.Component {
         } else {
             confirm = null;
         }
-
+        var location, city, state;
+        location = null;
+        city = this.props.auth.city;
+        state = this.props.auth.state;
         this.props.auth.name ? name = this.props.auth.name : name = null;
         this.props.auth.email ? email = this.props.auth.email : email = null;
-        this.props.auth.city ? city = 'City: ' + this.props.auth.city : city = null;
-        this.props.auth.state ? state = 'State: ' + this.props.auth.state : state = null;
+
+        if (city && state) {
+            location = city + ', ' + state;
+        } else if (city) {
+            location = city;
+        } else if (state) {
+            location = state;
+        }
 
         return (
             <div className="jumbotron" >
-                <h1>{name}</h1>
-                <h2>{email}</h2>
-                <h3>{city}</h3>
-                <h3>{state}</h3>
+                <div className="page-header">
+                    <h1>{email} <small>{name}</small></h1>
+                </div>
+                <h3>{location}</h3>
                 <br id='confirm' />
                 {confirm}
                 {requestsHtml}
                 <div>
                     <form onSubmit={this.onSubmit} >
                         <div className="form-group">
-                            <label htmlFor="title"><h4 className='text-primary' >Book Title:</h4></label>
+                            <label htmlFor="title"><h4>Book Title:</h4></label>
                             <input type="text" className="form-control" id="title" />
                         </div>
                         <button id='add' type="submit" className="btn btn-primary">Submit</button>

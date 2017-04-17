@@ -7,7 +7,7 @@ export default class Config extends React.Component {
     }
     submit(e) {
         e.preventDefault();
-        console.log('Config submit');
+        // console.log('Config submit');
         // console.log(e.target.elements);
         // console.log(e.target.elements.name.value);
         // console.log(e.target.elements.email.value);
@@ -27,13 +27,13 @@ export default class Config extends React.Component {
             city: city,
             state: state
         };
-        console.log(data);
+        // console.log(data);
         this.props.ajax(data);
 
     }
     render() {
-        console.log('Config');
-        console.log(this.props);
+        // console.log('Config');
+        // console.log(this.props);
         var name, email, city, state; 
         name = this.props.auth.name;
         email = this.props.auth.email;

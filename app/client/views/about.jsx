@@ -12,7 +12,7 @@ export default class About extends React.Component {
     return (
       <div className='jumbotron' >
         <h1>{appName}</h1>
-        <p>
+        <div id='about-body' >
           This site is for the <a href="https://www.freecodecamp.com" target="_blank">freeCodeCamp </a>
           Dynamic Web Applications Project:
           <a href={fccProjectURL} target="_blank"> {fccProjectName}</a>.
@@ -36,23 +36,25 @@ export default class About extends React.Component {
           <span id='warning'>
             This application is for educational purposes only.  Any and all data may be removed at anytime without warning.
           </span>
-        </p>
-        <div className='text-center' >
-          <div>
+        </div>
+        <div id='about-footer' className='text-center' >
+          <span>
             <a className='link' href="https://github.com/j-steve-martinez" target="_blank">
               J. Steve Martinez
             </a>
-          </div>
-          <div>
+          </span>
+          <span> | </span>
+          <span>
             <a className='link' href={herokuURL} target="_blank">
               Heroku
             </a>
-          </div>
-          <div>
+          </span>
+          <span> | </span>
+          <span>
             <a className='link' href={githubURL} target="_blank">
               Github
             </a>
-          </div>
+          </span>
         </div>
       </div>
     )

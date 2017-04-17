@@ -29,12 +29,14 @@ export default class Header extends React.Component {
                 <li><a id="user" onClick={this.cH} href="#"><span className="glyphicon glyphicon-user"></span> My Books</a></li>
                 <li><a id="config" onClick={this.cH} href="#"><span className="glyphicon glyphicon-cog"></span> Configure</a></li>
                 <li><a id="logout" onClick={this.cH} href="#"><span className="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                <li><a id="about" onClick={this.cH} href="#"><span className="glyphicon glyphicon-question-sign"></span> About</a></li>
             </ul>
         );
         var login = (
             <ul className="nav navbar-nav navbar-right" >
                 <li><a id="signup" onClick={this.cH} href="#"><span className="glyphicon glyphicon-user"></span> Sign Up</a></li>
                 <li><a id="login" onClick={this.cH} href="#"><span className="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li><a id="about" onClick={this.cH} href="#"><span className="glyphicon glyphicon-question-sign"></span> About</a></li>
             </ul>
         );
         var navs, auth = this.props.auth;
@@ -56,9 +58,6 @@ export default class Header extends React.Component {
                     <div className="navbar-header">
                         <a id="start" onClick={this.cH} className="navbar-brand" href="#">Book Lender</a>
                     </div>
-                    <ul className="nav navbar-nav navbar-left">
-                        <li><a id="about" onClick={this.cH} href="#"><span className="glyphicon glyphicon-question-sign"></span> About</a></li>
-                    </ul>
                     {navs}
                 </div>
             </nav>

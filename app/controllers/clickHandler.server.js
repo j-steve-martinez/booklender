@@ -29,7 +29,7 @@ function ClickHandler() {
 								uid: data._id,
 								bid: "ZbBOAAAAMAAJ",
 								title: "Tarzan of the Apes",
-								thumbnail: "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+								thumbnail: "https://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
 								isRequest: false,
 								isAccept: false,
 								lendee: ""
@@ -116,16 +116,17 @@ function ClickHandler() {
 				// console.log(error);
 				throw error;
 			} else {
-				// resolve(results);
-				// console.log(req.session.passport.user._id);
-				// console.log(results);
+				var thumbnail, url = results[0].thumbnail;
+				if (url) {
+					thumbnail = url.replace('http:', 'https:');
+				}
+
 				var myBook = new Book();
 				myBook.title = results[0].title;
-				myBook.thumbnail = results[0].thumbnail;
+				myBook.thumbnail = thumbnail;
 				myBook.bid = results[0].id;
 				myBook.uid = req.session.passport.user._id
-				// res.json(myBook);
-				//
+
 				Book.find({ bid: myBook.bid, uid: myBook.uid }, (err, book) => {
 					// console.log('book results');
 					// console.log(book);

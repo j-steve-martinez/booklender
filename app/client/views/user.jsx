@@ -62,7 +62,7 @@ export default class User extends React.Component {
         // console.log(e.target.id);
         // console.log(e.target.name);
         // console.log(this.state);
-        // var book, route, data;
+        var book, route, data;
         if (e.target.id !== 'cancel') {
 
             book = this.props.books.filter(obj => {

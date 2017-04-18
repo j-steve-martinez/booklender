@@ -13,13 +13,13 @@ function ClickHandler() {
 			if (err) throw err;
 			if (user.length === 0) {
 				var defaultUser = new User({
-					email: 'abc@cba.com',
-					password: 'abc'
+					email: 'admin@example.com',
+					password: 'abc123'
 				});
 				defaultUser.save((err, data) => {
 					if (err) throw err;
 					// console.log('default user saved!');
-					console.log(data);
+					// console.log(data);
 					Book.find({}, (err, book) => {
 						// console.log('default book');
 						// console.log(book);
@@ -36,8 +36,8 @@ function ClickHandler() {
 							});
 							defaultBook.save((err, data) => {
 								if (err) throw err;
-								console.log('default book saved!');
-								console.log(data);
+								// console.log('default book saved!');
+								// console.log(data);
 							});
 						}
 					});

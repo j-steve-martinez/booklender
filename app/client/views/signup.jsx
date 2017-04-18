@@ -7,7 +7,7 @@ export default class Signup extends React.Component {
     }
     submit(e) {
         e.preventDefault();
-        console.log('Signup submit');
+        // console.log('Signup submit');
         // console.log(e.target.elements);
         // console.log(e.target.elements.name.value);
         // console.log(e.target.elements.email.value);
@@ -22,13 +22,13 @@ export default class Signup extends React.Component {
             email: email,
             password: password,
         };
-        console.log(data);
+        // console.log(data);
         this.props.ajax(data);
 
     }
     render() {
-        console.log('Signup');
-        console.log(this.props);
+        // console.log('Signup');
+        // console.log(this.props);
         var error, message = this.props.auth.error;
         if (message === null) {
             error = null;

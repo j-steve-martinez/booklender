@@ -5934,7 +5934,7 @@
 	                                _react2.default.createElement(
 	                                    'h4',
 	                                    null,
-	                                    'Book Title:'
+	                                    'Enter book title you wish to add:'
 	                                )
 	                            ),
 	                            _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'title' })

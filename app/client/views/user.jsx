@@ -220,7 +220,7 @@ export default class User extends React.Component {
                 <div>
                     <form onSubmit={this.onSubmit} >
                         <div className="form-group">
-                            <label htmlFor="title"><h4>Book Title:</h4></label>
+                            <label htmlFor="title"><h4>Enter book title you wish to add:</h4></label>
                             <input type="text" className="form-control" id="title" />
                         </div>
                         <button id='add' type="submit" className="btn btn-primary">Submit</button>

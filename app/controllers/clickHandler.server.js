@@ -68,7 +68,7 @@ function ClickHandler() {
 	}
 
 	this.update = (req, res) => {
-		console.log(req.body);
+		// console.log(req.body);
 		// var name, email, city, state;
 		User.findOneAndUpdate(
 			{
@@ -85,7 +85,7 @@ function ClickHandler() {
 			{ new: true },
 			(err, user) => {
 				if (err) throw err;
-				console.log(user);
+				// console.log(user);
 				res.json({ user: user });
 			}
 		);

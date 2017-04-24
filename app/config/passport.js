@@ -19,22 +19,18 @@ module.exports = function (passport) {
 	});
 
 	passport.use('signup', new LocalStrategy(
-		// passport.use(new LocalStrategy(
 		{
-			// by new, local strategy uses username and password, we will override with email
 			usernameField: 'email',
 			passwordField: 'password',
-			// passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 		},
 		function (email, password, done) {
-			console.log('passport signup');
-			console.log(email);
-			console.log(password);
-			// return done(null, false)
+			// console.log('passport signup');
+			// console.log(email);
+			// console.log(password);
+
 			User.findOne({ email: email }, function (err, user) {
-				console.log('new user');
-				console.log(user);
-				// if (err) throw err;
+				// console.log('new user');
+				// console.log(user);
 				if (err) { console.log('err'); return done(err); }
 				if (user === null) {
 					var newUser = new User({
@@ -43,8 +39,8 @@ module.exports = function (passport) {
 					});
 					newUser.save((err, data) => {
 						if (err) throw err;
-						console.log('new user saved!');
-						console.log(data);
+						// console.log('new user saved!');
+						// console.log(data);
 						return done(null, data);
 					});
 				}
@@ -59,14 +55,11 @@ module.exports = function (passport) {
 		{
 			usernameField: 'email',
 			passwordField: 'password',
-			// passReqToCallback: true
-			// session: false
 		},
 		function (email, password, done) {
 			User.findOne({ email: email, password: password }, function (err, user) {
 				if (err) { console.log('err'); return done(err); }
 				if (!user) { return done(null, false); }
-				// if (!user.verifyPassword(password)) { return done(null, false); }
 				return done(null, user);
 			});
 		}

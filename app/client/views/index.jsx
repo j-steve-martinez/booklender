@@ -19,20 +19,6 @@ export default class Main extends React.Component {
         this.ajax = this.ajax.bind(this);
         var auth = { _id: false, error: null };
         this.state = { auth: auth, books: [] };
-
-        /**
-         * Mock auth for testing
-         */
-        // var auth = {
-        //     _id: '58ed2fd038cefd1c99fce80a',
-        //     email: 'abc@cba.com',
-        //     name: '',
-        //     city: '',
-        //     state: '',
-        //     error: null
-        // };
-        // this.state = { auth: auth, books: [] };
-
     }
     router(route) {
         // console.log('main router');
@@ -84,7 +70,6 @@ export default class Main extends React.Component {
                 email: email,
                 city: city,
                 state: state,
-                // books: books,
                 error: error
             }
             return obj;
@@ -92,7 +77,6 @@ export default class Main extends React.Component {
 
         books = this.state.books
         route = data.route;
-        // url = window.location.origin;
 
         switch (route) {
             case 'signup':
@@ -221,7 +205,6 @@ export default class Main extends React.Component {
                             book: book
                         }
                         this.state.primus.write(data);
-                        // this.state.primus.write(book);
                         // console.log(auth);
                         break;
                     case 'titles':
@@ -230,7 +213,6 @@ export default class Main extends React.Component {
                         books = results;
                         // console.log(this.state.auth);
                         // console.log(books);
-                        // books.push(book);
                         auth = parseAuth(this.state.auth)
                         // console.log(auth);
                         break;
@@ -262,14 +244,6 @@ export default class Main extends React.Component {
 
                 }
             });
-
-
-        /**
-         * This is a mockup
-         */
-        // var route, auth;
-        // route = data.route;
-        // auth = { id: '12345', email: 'foo@bar.com' }
     }
     componentDidMount() {
         /**
@@ -324,13 +298,11 @@ export default class Main extends React.Component {
 
             }
         });
-        // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
         var data = {
             route: 'titles',
             primus: primus
         }
         this.ajax(data)
-        // this.setState({ primus: primus });
     }
     render() {
         // console.log('Main render');
@@ -375,53 +347,3 @@ ReactDOM.render(
     <Main />,
     document.getElementById('content')
 );
-
-var mockBook = {
-    "kind": "books#volumes",
-    "totalItems": 1750,
-    "items": [
-        {
-            "kind": "books#volume",
-            "id": "ZbBOAAAAMAAJ",
-            "etag": "n7XvsUcaAGo",
-            "selfLink": "https://www.googleapis.com/books/v1/volumes/ZbBOAAAAMAAJ",
-            "volumeInfo": {
-                "title": "Tarzan of the Apes",
-                "authors": [
-                    "Edgar Rice Burroughs"
-                ],
-                "publishedDate": "1914",
-                "readingModes": {
-                    "text": true,
-                    "image": true
-                },
-                "maturityRating": "NOT_MATURE",
-                "allowAnonLogging": false,
-                "contentVersion": "1.1.2.0.full.3",
-                "imageLinks": {
-                    "smallThumbnail": "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
-                    "thumbnail": "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-                },
-                "previewLink": "http://books.google.com/books?id=ZbBOAAAAMAAJ&printsec=frontcover&dq=tarzan&hl=&as_pt=BOOKS&cd=1&source=gbs_api",
-                "infoLink": "https://play.google.com/store/books/details?id=ZbBOAAAAMAAJ&source=gbs_api",
-                "canonicalVolumeLink": "https://market.android.com/details?id=book-ZbBOAAAAMAAJ"
-            },
-            "saleInfo": {
-                "country": "US",
-                "buyLink": "https://play.google.com/store/books/details?id=ZbBOAAAAMAAJ&rdid=book-ZbBOAAAAMAAJ&rdot=1&source=gbs_api"
-            },
-            "accessInfo": {
-                "country": "US",
-                "epub": {
-                    "isAvailable": true,
-                    "downloadLink": "http://books.google.com/books/download/Tarzan_of_the_Apes.epub?id=ZbBOAAAAMAAJ&hl=&output=epub&source=gbs_api"
-                },
-                "pdf": {
-                    "isAvailable": true,
-                    "downloadLink": "http://books.google.com/books/download/Tarzan_of_the_Apes.pdf?id=ZbBOAAAAMAAJ&hl=&output=pdf&sig=ACfU3U3FEVwK2L30RIWfVZU16Rah8Y9HYQ&source=gbs_api"
-                },
-                "accessViewStatus": "FULL_PUBLIC_DOMAIN"
-            }
-        }
-    ]
-}

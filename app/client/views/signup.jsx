@@ -13,12 +13,10 @@ export default class Signup extends React.Component {
         // console.log(e.target.elements.email.value);
         // console.log(e.target.elements.password.value);
         var data, name, email, password;
-        // name = e.target.elements.name.value;
         email = e.target.elements.email.value;
         password = e.target.elements.password.value;
         data = {
             route: 'signup',
-            // name: name,
             email: email,
             password: password,
         };

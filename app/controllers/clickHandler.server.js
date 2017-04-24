@@ -44,27 +44,6 @@ function ClickHandler() {
 				});
 			}
 		});
-		// Book.find({}, (err, book) => {
-		// 	// console.log('default book');
-		// 	// console.log(book);
-		// 	if (err) throw err;
-		// 	if (book.length === 0) {
-		// 		var defaultBook = new Book({
-		// 			uid: "58e9587d0cc136250e0e3d08",
-		// 			bid: "ZbBOAAAAMAAJ",
-		// 			title: "Tarzan of the Apes",
-		// 			thumbnail: "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
-		// 			isRequest: false,
-		// 			isAccept: false,
-		// 			lendee: ""
-		// 		});
-		// 		defaultBook.save((err, data) => {
-		// 			if (err) throw err;
-		// 			console.log('default book saved!');
-		// 			console.log(data);
-		// 		});
-		// 	}
-		// });
 	}
 
 	this.update = (req, res) => {

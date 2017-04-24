@@ -36,7 +36,6 @@ export default class User extends React.Component {
             }
         }
         window.scrollTo(0, findPos(document.getElementById("confirm")));
-        // scrollTo(0, 100);
         this.setState(data);
     }
     onSubmit(e) {

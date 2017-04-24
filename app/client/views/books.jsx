@@ -34,7 +34,6 @@ export default class Books extends React.Component {
             }
         }
         window.scrollTo(0,findPos(document.getElementById("title")));
-        // scrollTo(0, 100);
         this.setState(data);
     }
     onConfirm(e) {
@@ -74,9 +73,7 @@ export default class Books extends React.Component {
                 // console.log(obj._id);
                 var tmp = (
                     <a key={key} onClick={this.onClick} href='#' >
-                        {/*<span  className='glyphicon glyphicon-transfer' >*/}
                         <img id={obj._id} src={obj.thumbnail} alt={obj.title} height="180" width="128" ></img>
-                        {/*</span>*/}
                     </a>
                 )
                 return tmp;

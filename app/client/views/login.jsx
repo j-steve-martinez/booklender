@@ -19,7 +19,6 @@ export default class Login extends React.Component {
             email: email,
             password: password,
         };
-        // console.log(data);
         this.props.ajax(data);
 
     }

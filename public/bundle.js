@@ -109,20 +109,6 @@
 	        _this.ajax = _this.ajax.bind(_this);
 	        var auth = { _id: false, error: null };
 	        _this.state = { auth: auth, books: [] };
-
-	        /**
-	         * Mock auth for testing
-	         */
-	        // var auth = {
-	        //     _id: '58ed2fd038cefd1c99fce80a',
-	        //     email: 'abc@cba.com',
-	        //     name: '',
-	        //     city: '',
-	        //     state: '',
-	        //     error: null
-	        // };
-	        // this.state = { auth: auth, books: [] };
-
 	        return _this;
 	    }
 
@@ -193,7 +179,6 @@
 	                    email: email,
 	                    city: city,
 	                    state: state,
-	                    // books: books,
 	                    error: error
 	                };
 	                return obj;
@@ -201,7 +186,6 @@
 
 	            books = this.state.books;
 	            route = data.route;
-	            // url = window.location.origin;
 
 	            switch (route) {
 	                case 'signup':
@@ -329,7 +313,6 @@
 	                            book: book
 	                        };
 	                        _this2.state.primus.write(data);
-	                        // this.state.primus.write(book);
 	                        // console.log(auth);
 	                        break;
 	                    case 'titles':
@@ -338,7 +321,6 @@
 	                        books = results;
 	                        // console.log(this.state.auth);
 	                        // console.log(books);
-	                        // books.push(book);
 	                        auth = parseAuth(_this2.state.auth);
 	                        // console.log(auth);
 	                        break;
@@ -368,13 +350,6 @@
 	                    _this2.setState({ route: route, auth: auth });
 	                }
 	            });
-
-	            /**
-	             * This is a mockup
-	             */
-	            // var route, auth;
-	            // route = data.route;
-	            // auth = { id: '12345', email: 'foo@bar.com' }
 	        }
 	    }, {
 	        key: 'componentDidMount',
@@ -432,13 +407,11 @@
 	                    // console.log(books);
 	                }
 	            });
-	            // primus.write({ _id: false, title: 'tarzan', name: 'Foo Man' });
 	            var data = {
 	                route: 'titles',
 	                primus: primus
 	            };
 	            this.ajax(data);
-	            // this.setState({ primus: primus });
 	        }
 	    }, {
 	        key: 'render',
@@ -488,52 +461,6 @@
 
 
 	ReactDOM.render(React.createElement(Main, null), document.getElementById('content'));
-
-	var mockBook = {
-	    "kind": "books#volumes",
-	    "totalItems": 1750,
-	    "items": [{
-	        "kind": "books#volume",
-	        "id": "ZbBOAAAAMAAJ",
-	        "etag": "n7XvsUcaAGo",
-	        "selfLink": "https://www.googleapis.com/books/v1/volumes/ZbBOAAAAMAAJ",
-	        "volumeInfo": {
-	            "title": "Tarzan of the Apes",
-	            "authors": ["Edgar Rice Burroughs"],
-	            "publishedDate": "1914",
-	            "readingModes": {
-	                "text": true,
-	                "image": true
-	            },
-	            "maturityRating": "NOT_MATURE",
-	            "allowAnonLogging": false,
-	            "contentVersion": "1.1.2.0.full.3",
-	            "imageLinks": {
-	                "smallThumbnail": "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
-	                "thumbnail": "http://books.google.com/books/content?id=ZbBOAAAAMAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-	            },
-	            "previewLink": "http://books.google.com/books?id=ZbBOAAAAMAAJ&printsec=frontcover&dq=tarzan&hl=&as_pt=BOOKS&cd=1&source=gbs_api",
-	            "infoLink": "https://play.google.com/store/books/details?id=ZbBOAAAAMAAJ&source=gbs_api",
-	            "canonicalVolumeLink": "https://market.android.com/details?id=book-ZbBOAAAAMAAJ"
-	        },
-	        "saleInfo": {
-	            "country": "US",
-	            "buyLink": "https://play.google.com/store/books/details?id=ZbBOAAAAMAAJ&rdid=book-ZbBOAAAAMAAJ&rdot=1&source=gbs_api"
-	        },
-	        "accessInfo": {
-	            "country": "US",
-	            "epub": {
-	                "isAvailable": true,
-	                "downloadLink": "http://books.google.com/books/download/Tarzan_of_the_Apes.epub?id=ZbBOAAAAMAAJ&hl=&output=epub&source=gbs_api"
-	            },
-	            "pdf": {
-	                "isAvailable": true,
-	                "downloadLink": "http://books.google.com/books/download/Tarzan_of_the_Apes.pdf?id=ZbBOAAAAMAAJ&hl=&output=pdf&sig=ACfU3U3FEVwK2L30RIWfVZU16Rah8Y9HYQ&source=gbs_api"
-	            },
-	            "accessViewStatus": "FULL_PUBLIC_DOMAIN"
-	        }
-	    }]
-	};
 
 /***/ },
 /* 1 */
@@ -4823,7 +4750,6 @@
 	                }
 	            }
 	            window.scrollTo(0, findPos(document.getElementById("title")));
-	            // scrollTo(0, 100);
 	            this.setState(data);
 	        }
 	    }, {
@@ -5298,7 +5224,6 @@
 	                email: email,
 	                password: password
 	            };
-	            // console.log(data);
 	            this.props.ajax(data);
 	        }
 	    }, {
@@ -5398,12 +5323,10 @@
 	            // console.log(e.target.elements.email.value);
 	            // console.log(e.target.elements.password.value);
 	            var data, name, email, password;
-	            // name = e.target.elements.name.value;
 	            email = e.target.elements.email.value;
 	            password = e.target.elements.password.value;
 	            data = {
 	                route: 'signup',
-	                // name: name,
 	                email: email,
 	                password: password
 	            };
@@ -5672,7 +5595,6 @@
 	                }
 	            }
 	            window.scrollTo(0, findPos(document.getElementById("confirm")));
-	            // scrollTo(0, 100);
 	            this.setState(data);
 	        }
 	    }, {

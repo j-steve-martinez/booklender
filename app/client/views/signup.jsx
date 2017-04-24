@@ -4,24 +4,29 @@ export default class Signup extends React.Component {
     constructor(props) {
         super(props);
         this.submit = this.submit.bind(this);
+        this.state = { message: null }
     }
     submit(e) {
         e.preventDefault();
         // console.log('Signup submit');
-        // console.log(e.target.elements);
-        // console.log(e.target.elements.name.value);
         // console.log(e.target.elements.email.value);
         // console.log(e.target.elements.password.value);
-        var data, name, email, password;
+        // console.log(e.target.elements.confirm.value);
+        var data, email, password, confirm;
         email = e.target.elements.email.value;
         password = e.target.elements.password.value;
-        data = {
-            route: 'signup',
-            email: email,
-            password: password,
-        };
-        // console.log(data);
-        this.props.ajax(data);
+        confirm = e.target.elements.confirm.value;
+        if (password === confirm) {
+
+            data = {
+                route: 'signup',
+                email: email,
+                password: password,
+            };
+            this.props.ajax(data);
+        } else {
+            this.setState({ message: 'The passwords don\'t match!' });
+        }
 
     }
     render() {
@@ -42,6 +47,11 @@ export default class Signup extends React.Component {
                 <div className='page-header'>
                     <h1>Signup</h1>
                 </div>
+                <div className='text-danger' >
+                    <h3>
+                        {this.state.message}
+                    </h3>
+                </div>
                 <form onSubmit={this.submit} >
                     {error}
                     <div className="form-group">
@@ -51,6 +61,10 @@ export default class Signup extends React.Component {
                     <div className="form-group">
                         <label htmlFor="password">Password:</label>
                         <input type="password" className="form-control" id="password" required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="confirm">Confirm:</label>
+                        <input type="password" className="form-control" id="confirm" required />
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>

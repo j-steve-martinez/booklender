@@ -5326,6 +5326,7 @@
 	        var _this = _possibleConstructorReturn(this, (Signup.__proto__ || Object.getPrototypeOf(Signup)).call(this, props));
 
 	        _this.submit = _this.submit.bind(_this);
+	        _this.state = { message: null };
 	        return _this;
 	    }
 
@@ -5334,20 +5335,24 @@
 	        value: function submit(e) {
 	            e.preventDefault();
 	            // console.log('Signup submit');
-	            // console.log(e.target.elements);
-	            // console.log(e.target.elements.name.value);
 	            // console.log(e.target.elements.email.value);
 	            // console.log(e.target.elements.password.value);
-	            var data, name, email, password;
+	            // console.log(e.target.elements.confirm.value);
+	            var data, email, password, confirm;
 	            email = e.target.elements.email.value;
 	            password = e.target.elements.password.value;
-	            data = {
-	                route: 'signup',
-	                email: email,
-	                password: password
-	            };
-	            // console.log(data);
-	            this.props.ajax(data);
+	            confirm = e.target.elements.confirm.value;
+	            if (password === confirm) {
+
+	                data = {
+	                    route: 'signup',
+	                    email: email,
+	                    password: password
+	                };
+	                this.props.ajax(data);
+	            } else {
+	                this.setState({ message: 'The passwords don\'t match!' });
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -5383,6 +5388,15 @@
 	                    )
 	                ),
 	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'text-danger' },
+	                    _react2.default.createElement(
+	                        'h3',
+	                        null,
+	                        this.state.message
+	                    )
+	                ),
+	                _react2.default.createElement(
 	                    'form',
 	                    { onSubmit: this.submit },
 	                    error,
@@ -5405,6 +5419,16 @@
 	                            'Password:'
 	                        ),
 	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'password', required: true })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'confirm' },
+	                            'Confirm:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'confirm', required: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',

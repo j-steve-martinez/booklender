@@ -52,7 +52,7 @@ export default class Signup extends React.Component {
                         <label htmlFor="password">Password:</label>
                         <input type="password" className="form-control" id="password" required />
                     </div>
-                    <button type="submit" className="btn btn-default">Submit</button>
+                    <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
             </div>
         )

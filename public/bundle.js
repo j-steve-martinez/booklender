@@ -5280,7 +5280,7 @@
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { type: 'submit', className: 'btn btn-default' },
+	                        { type: 'submit', className: 'btn btn-primary' },
 	                        'Submit'
 	                    )
 	                )
@@ -5408,7 +5408,7 @@
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { type: 'submit', className: 'btn btn-default' },
+	                        { type: 'submit', className: 'btn btn-primary' },
 	                        'Submit'
 	                    )
 	                )

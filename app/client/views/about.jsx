@@ -10,8 +10,10 @@ export default class About extends React.Component {
     githubURL = "https://github.com/j-steve-martinez/booklender";
 
     return (
-      <div className='jumbotron' >
-        <h1>{appName}</h1>
+      <div className='jumbotron'>
+        <div className='page-header'>
+          <h1>{appName}</h1>
+        </div>
         <div id='about-body' >
           This site is for the <a href="https://www.freecodecamp.com" target="_blank">freeCodeCamp </a>
           Dynamic Web Applications Project:

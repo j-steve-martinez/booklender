@@ -33,7 +33,7 @@ export default class Books extends React.Component {
                 return [curtop];
             }
         }
-        window.scrollTo(0,findPos(document.getElementById("title")));
+        window.scrollTo(0, findPos(document.getElementById("title")));
         this.setState(data);
     }
     onConfirm(e) {
@@ -92,7 +92,9 @@ export default class Books extends React.Component {
         }
         return (
             <div className="jumbotron" >
-                <h1 id='title' >Available Books</h1>
+                <div className='page-header'>
+                    <h1 id='title' >Available Books</h1>
+                </div>
                 {confirm}
                 <br />
                 {books}

@@ -27,7 +27,9 @@ export default class Login extends React.Component {
         // console.log(this.props);
         return (
             <div className='jumbotron' >
-                <h1>Login</h1>
+                <div className='page-header'>
+                    <h1>Login</h1>
+                </div>
                 <form onSubmit={this.submit} >
                     <div className="form-group">
                         <label htmlFor="email">Email address:</label>

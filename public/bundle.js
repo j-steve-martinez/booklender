@@ -509,9 +509,13 @@
 	        'div',
 	        { className: 'jumbotron' },
 	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          appName
+	          'div',
+	          { className: 'page-header' },
+	          _react2.default.createElement(
+	            'h1',
+	            null,
+	            appName
+	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -4829,9 +4833,13 @@
 	                'div',
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
-	                    'h1',
-	                    { id: 'title' },
-	                    'Available Books'
+	                    'div',
+	                    { className: 'page-header' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        { id: 'title' },
+	                        'Available Books'
+	                    )
 	                ),
 	                confirm,
 	                _react2.default.createElement('br', null),
@@ -4923,9 +4931,13 @@
 	                'div',
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
-	                    'h1',
-	                    null,
-	                    'Update Your Profile'
+	                    'div',
+	                    { className: 'page-header' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        'Update Your Profile'
+	                    )
 	                ),
 	                _react2.default.createElement(
 	                    'form',
@@ -5235,9 +5247,13 @@
 	                'div',
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
-	                    'h1',
-	                    null,
-	                    'Login'
+	                    'div',
+	                    { className: 'page-header' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        'Login'
+	                    )
 	                ),
 	                _react2.default.createElement(
 	                    'form',
@@ -5358,9 +5374,13 @@
 	                'div',
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
-	                    'h1',
-	                    null,
-	                    'Signup'
+	                    'div',
+	                    { className: 'page-header' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        'Signup'
+	                    )
 	                ),
 	                _react2.default.createElement(
 	                    'form',
@@ -5447,9 +5467,13 @@
 	                'div',
 	                { className: 'jumbotron' },
 	                _react2.default.createElement(
-	                    'h1',
-	                    null,
-	                    'Welcome'
+	                    'div',
+	                    { className: 'page-header' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        'Welcome'
+	                    )
 	                ),
 	                _react2.default.createElement(
 	                    'h2',

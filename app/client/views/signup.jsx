@@ -39,7 +39,9 @@ export default class Signup extends React.Component {
         }
         return (
             <div className='jumbotron'>
-                <h1>Signup</h1>
+                <div className='page-header'>
+                    <h1>Signup</h1>
+                </div>
                 <form onSubmit={this.submit} >
                     {error}
                     <div className="form-group">

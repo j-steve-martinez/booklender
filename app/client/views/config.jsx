@@ -34,7 +34,7 @@ export default class Config extends React.Component {
     render() {
         // console.log('Config');
         // console.log(this.props);
-        var name, email, city, state; 
+        var name, email, city, state;
         name = this.props.auth.name;
         email = this.props.auth.email;
         city = this.props.auth.city;
@@ -42,7 +42,9 @@ export default class Config extends React.Component {
 
         return (
             <div className='jumbotron'>
-                <h1>Update Your Profile</h1>
+                <div className='page-header'>
+                    <h1>Update Your Profile</h1>
+                </div>
                 <form onSubmit={this.submit} >
                     <div className="form-group">
                         <label htmlFor="email">Email:</label>

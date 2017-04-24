@@ -4,6 +4,7 @@ export default class Config extends React.Component {
     constructor(props) {
         super(props);
         this.submit = this.submit.bind(this);
+        this.state = { message: null }
     }
     submit(e) {
         e.preventDefault();
@@ -13,22 +14,34 @@ export default class Config extends React.Component {
         // console.log(e.target.elements.email.value);
         // console.log(e.target.elements.city.value);
         // console.log(e.target.elements.state.value);
-        var data, id, name, email, city, state;
+        var data, id, name, email, city, state, password, confirm;
         id = this.props.auth._id;
         name = e.target.elements.name.value;
         email = e.target.elements.email.value;
         city = e.target.elements.city.value;
         state = e.target.elements.state.value;
-        data = {
-            route: 'update',
-            id: id,
-            name: name,
-            email: email,
-            city: city,
-            state: state
-        };
-        // console.log(data);
-        this.props.ajax(data);
+        password = e.target.elements.password.value;
+        confirm = e.target.elements.confirm.value;
+
+        if (password === confirm) {
+
+            data = {
+                route: 'update',
+                id: id,
+                name: name,
+                email: email,
+                city: city,
+                state: state,
+                password: password
+            };
+
+            // console.log(data);
+            this.props.ajax(data);
+
+        } else {
+            this.setState({ message: 'The passwords don\'t match!' });
+        }
+
 
     }
     render() {
@@ -44,6 +57,11 @@ export default class Config extends React.Component {
             <div className='jumbotron'>
                 <div className='page-header'>
                     <h1>Update Your Profile</h1>
+                </div>
+                <div className='text-danger' >
+                    <h3>
+                        {this.state.message}
+                    </h3>
                 </div>
                 <form onSubmit={this.submit} >
                     <div className="form-group">
@@ -61,6 +79,14 @@ export default class Config extends React.Component {
                     <div className="form-group">
                         <label htmlFor="state">State:</label>
                         <input type="text" className="form-control" id="state" defaultValue={state} />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password:</label>
+                        <input type="password" className="form-control" id="password" required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="confirm">Confirm:</label>
+                        <input type="password" className="form-control" id="confirm" required />
                     </div>
                     <button type="submit" className="btn btn-default">Submit</button>
                 </form>

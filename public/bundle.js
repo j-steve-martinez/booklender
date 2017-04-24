@@ -4886,6 +4886,7 @@
 	        var _this = _possibleConstructorReturn(this, (Config.__proto__ || Object.getPrototypeOf(Config)).call(this, props));
 
 	        _this.submit = _this.submit.bind(_this);
+	        _this.state = { message: null };
 	        return _this;
 	    }
 
@@ -4899,22 +4900,32 @@
 	            // console.log(e.target.elements.email.value);
 	            // console.log(e.target.elements.city.value);
 	            // console.log(e.target.elements.state.value);
-	            var data, id, name, email, city, state;
+	            var data, id, name, email, city, state, password, confirm;
 	            id = this.props.auth._id;
 	            name = e.target.elements.name.value;
 	            email = e.target.elements.email.value;
 	            city = e.target.elements.city.value;
 	            state = e.target.elements.state.value;
-	            data = {
-	                route: 'update',
-	                id: id,
-	                name: name,
-	                email: email,
-	                city: city,
-	                state: state
-	            };
-	            // console.log(data);
-	            this.props.ajax(data);
+	            password = e.target.elements.password.value;
+	            confirm = e.target.elements.confirm.value;
+
+	            if (password === confirm) {
+
+	                data = {
+	                    route: 'update',
+	                    id: id,
+	                    name: name,
+	                    email: email,
+	                    city: city,
+	                    state: state,
+	                    password: password
+	                };
+
+	                // console.log(data);
+	                this.props.ajax(data);
+	            } else {
+	                this.setState({ message: 'The passwords don\'t match!' });
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -4937,6 +4948,15 @@
 	                        'h1',
 	                        null,
 	                        'Update Your Profile'
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'text-danger' },
+	                    _react2.default.createElement(
+	                        'h3',
+	                        null,
+	                        this.state.message
 	                    )
 	                ),
 	                _react2.default.createElement(
@@ -4981,6 +5001,26 @@
 	                            'State:'
 	                        ),
 	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'state', defaultValue: state })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'password' },
+	                            'Password:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'password', required: true })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'confirm' },
+	                            'Confirm:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'confirm', required: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',

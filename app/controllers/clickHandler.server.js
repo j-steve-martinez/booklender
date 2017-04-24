@@ -58,7 +58,8 @@ function ClickHandler() {
 				{
 					name: req.body.name,
 					city: req.body.city,
-					state: req.body.state
+					state: req.body.state,
+					password: req.body.password
 				}
 			},
 			{ new: true },

@@ -32,13 +32,13 @@ export default class Signup extends React.Component {
     render() {
         // console.log('Signup');
         // console.log(this.props);
-        var error, message = this.props.auth.error;
-        if (message === null) {
+        var error;
+        if (this.props.auth.error === null) {
             error = null;
         } else {
             error = (
                 <div className="panel panel-danger">
-                    <div className="panel-heading">Error: {message}</div>
+                    <div className="panel-heading">Error: {this.props.auth.error.message}</div>
                 </div>
             )
         }

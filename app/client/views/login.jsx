@@ -25,12 +25,23 @@ export default class Login extends React.Component {
     render() {
         // console.log('Login');
         // console.log(this.props);
+        var error;
+        if (this.props.auth.error === null) {
+            error = null;
+        } else {
+            error = (
+                <div className="panel panel-danger">
+                    <div className="panel-heading">Error: {this.props.auth.error.message}</div>
+                </div>
+            )
+        }
         return (
             <div className='jumbotron' >
                 <div className='page-header'>
                     <h1>Login</h1>
                 </div>
-                <form onSubmit={this.submit} >
+                <form onSubmit={this.submit}>
+                    {error}
                     <div className="form-group">
                         <label htmlFor="email">Email address:</label>
                         <input type="email" className="form-control" id="email" required />

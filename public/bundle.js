@@ -342,12 +342,15 @@
 	                }
 	            }).fail(function (err) {
 	                // console.log('AJAX .fail');
-	                if (route === 'signup') {
-	                    // console.log(JSON.parse(err.responseText));
-	                    var auth = _this2.state.auth;
-	                    auth.error = JSON.parse(err.responseText).error;
-	                    // console.log(auth);
+	                // console.log(err);
+	                var auth = _this2.state.auth;
+	                if (err.responseJSON.error) {
+	                    auth.error = err.responseJSON.error;
 	                    _this2.setState({ route: route, auth: auth });
+	                } else {
+	                    console.log('An unknown server error occured occured!');
+	                    alert('An unknown server error occured occured!');
+	                    _this2.setState({ route: 'start' });
 	                }
 	            });
 	        }
@@ -418,13 +421,18 @@
 	        value: function render() {
 	            // console.log('Main render');
 	            // console.log(this.state);
-	            var page;
-	            switch (this.state.route) {
+	            var page, error, route;
+	            route = this.state.route;
+	            error = this.state.auth.error;
+	            if (error) {
+	                route = error.type;
+	            }
+	            switch (route) {
 	                case 'start':
 	                    page = React.createElement(_start2.default, null);
 	                    break;
 	                case 'login':
-	                    page = React.createElement(_login2.default, { ajax: this.ajax });
+	                    page = React.createElement(_login2.default, { ajax: this.ajax, auth: this.state.auth });
 	                    break;
 	                case 'config':
 	                    page = React.createElement(_config2.default, { ajax: this.ajax, auth: this.state.auth });
@@ -5283,6 +5291,21 @@
 	        value: function render() {
 	            // console.log('Login');
 	            // console.log(this.props);
+	            var error;
+	            if (this.props.auth.error === null) {
+	                error = null;
+	            } else {
+	                error = _react2.default.createElement(
+	                    'div',
+	                    { className: 'panel panel-danger' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'panel-heading' },
+	                        'Error: ',
+	                        this.props.auth.error.message
+	                    )
+	                );
+	            }
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'jumbotron' },
@@ -5298,6 +5321,7 @@
 	                _react2.default.createElement(
 	                    'form',
 	                    { onSubmit: this.submit },
+	                    error,
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'form-group' },
@@ -5399,9 +5423,8 @@
 	        value: function render() {
 	            // console.log('Signup');
 	            // console.log(this.props);
-	            var error,
-	                message = this.props.auth.error;
-	            if (message === null) {
+	            var error;
+	            if (this.props.auth.error === null) {
 	                error = null;
 	            } else {
 	                error = _react2.default.createElement(
@@ -5411,7 +5434,7 @@
 	                        'div',
 	                        { className: 'panel-heading' },
 	                        'Error: ',
-	                        message
+	                        this.props.auth.error.message
 	                    )
 	                );
 	            }

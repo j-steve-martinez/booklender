@@ -46,11 +46,11 @@ module.exports = function (app, passport, primus) {
 				// console.log(err);
 
 				if (err) { return next(err); }
-				if (!user) { return res.status(401).send({ "error": "Email already in use!" }); }
+				if (!user) { return res.status(401).send({ error: { type: 'signup', message: "Email already in use!"}}); }
 				req.logIn(user, function (err) {
 					// console.log('logIn user');
 					// console.log(user);
-					if (err) { return res.status(401).send({ "ok": false }); }
+					if (err) { return res.status(401).send({ ok: err }); }
 					return res.send({ user });
 				});
 
@@ -70,12 +70,13 @@ module.exports = function (app, passport, primus) {
 
 				// console.log('login user');
 				// console.log(user);
+				// console.log(err);
 				// console.log(req.body);
 
 				if (err) { return next(err); }
-				if (!user) { return res.status(401).send({ "ok": false }); }
+				if (!user) { return res.status(401).send({ error: { type: 'login', message: "Email or Password not correct!"}}); }
 				req.logIn(user, function (err) {
-					if (err) { return res.status(401).send({ "ok": false }); }
+					if (err) { return res.status(401).send({ ok: err }); }
 					// return res.send({ "ok": true });
 					return res.send({ user });
 				});

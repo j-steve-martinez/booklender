@@ -235,13 +235,15 @@ export default class Main extends React.Component {
             })
             .fail(err => {
                 // console.log('AJAX .fail');
-                if (route === 'signup') {
-                    // console.log(JSON.parse(err.responseText));
-                    var auth = this.state.auth;
-                    auth.error = JSON.parse(err.responseText).error;
-                    // console.log(auth);
+                // console.log(err);
+                var auth = this.state.auth;
+                if (err.responseJSON.error) {
+                    auth.error = err.responseJSON.error;
                     this.setState({ route: route, auth: auth });
-
+                } else {
+                    console.log('An unknown server error occured occured!');
+                    alert('An unknown server error occured occured!');
+                    this.setState({ route: 'start'});
                 }
             });
     }
@@ -307,13 +309,18 @@ export default class Main extends React.Component {
     render() {
         // console.log('Main render');
         // console.log(this.state);
-        var page;
-        switch (this.state.route) {
+        var page, error, route;
+        route = this.state.route;
+        error = this.state.auth.error;
+        if (error) {
+            route = error.type;
+        }
+        switch (route) {
             case 'start':
                 page = <Start />
                 break;
             case 'login':
-                page = <Login ajax={this.ajax} />
+                page = <Login ajax={this.ajax} auth={this.state.auth} />
                 break;
             case 'config':
                 page = <Config ajax={this.ajax} auth={this.state.auth} />

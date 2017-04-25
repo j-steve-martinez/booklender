@@ -66,7 +66,7 @@ export default class Config extends React.Component {
                 <form onSubmit={this.submit} >
                     <div className="form-group">
                         <label htmlFor="email">Email:</label>
-                        <input type="email" className="form-control" id="email" value={email} readOnly />
+                        <input type="email" className="form-control bg-info" id="email" value={email} readOnly />
                     </div>
                     <div className="form-group">
                         <label htmlFor="name">Name:</label>
@@ -82,13 +82,13 @@ export default class Config extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password:</label>
-                        <input type="password" className="form-control" id="password" required />
+                        <input type="password" className="form-control" id="password"/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="confirm">Confirm:</label>
-                        <input type="password" className="form-control" id="confirm" required />
+                        <input type="password" className="form-control" id="confirm"/>
                     </div>
-                    <button type="submit" className="btn btn-default">Submit</button>
+                    <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
             </div>
         )

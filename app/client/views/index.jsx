@@ -1,5 +1,10 @@
 'use strict'
 
+/**
+ * TODO: fix empty password on the back end
+ * if it is blank don't save it.
+ */
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 

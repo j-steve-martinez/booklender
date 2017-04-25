@@ -46,6 +46,11 @@
 
 	'use strict';
 
+	/**
+	 * TODO: fix empty password on the back end
+	 * if it is blank don't save it.
+	 */
+
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
@@ -4978,7 +4983,7 @@
 	                            { htmlFor: 'email' },
 	                            'Email:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'email', className: 'form-control', id: 'email', value: email, readOnly: true })
+	                        _react2.default.createElement('input', { type: 'email', className: 'form-control bg-info', id: 'email', value: email, readOnly: true })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -5018,7 +5023,7 @@
 	                            { htmlFor: 'password' },
 	                            'Password:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'password', required: true })
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'password' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -5028,11 +5033,11 @@
 	                            { htmlFor: 'confirm' },
 	                            'Confirm:'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'confirm', required: true })
+	                        _react2.default.createElement('input', { type: 'password', className: 'form-control', id: 'confirm' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { type: 'submit', className: 'btn btn-default' },
+	                        { type: 'submit', className: 'btn btn-primary' },
 	                        'Submit'
 	                    )
 	                )

@@ -30,7 +30,6 @@ module.exports = function (app, passport, primus) {
 
 	app.route('/signup')
 		.post((req, res, next) => {
-
 			// console.log('signup req');
 			// console.log(req);
 			// console.log(req.body);

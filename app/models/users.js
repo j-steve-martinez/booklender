@@ -6,7 +6,11 @@ var Schema = mongoose.Schema;
 var User = new Schema({
 	name: String,
 	email: String,
-	password: String,
+	password: {
+		type: String,
+		required: true,
+		minlength: 1
+	},
 	city: String,
 	state: String,
 });

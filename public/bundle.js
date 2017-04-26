@@ -4937,6 +4937,17 @@
 	                // console.log(data);
 	                this.props.ajax(data);
 	            } else {
+	                var findPos = function findPos(obj) {
+	                    var curtop = 0;
+	                    if (obj.offsetParent) {
+	                        do {
+	                            curtop += obj.offsetTop;
+	                        } while (obj = obj.offsetParent);
+	                        return [curtop];
+	                    }
+	                };
+
+	                window.scrollTo(0, findPos(document.getElementById("error")));
 	                this.setState({ message: 'The passwords don\'t match!' });
 	            }
 	        }
@@ -4968,7 +4979,7 @@
 	                    { className: 'text-danger' },
 	                    _react2.default.createElement(
 	                        'h3',
-	                        null,
+	                        { id: 'error' },
 	                        this.state.message
 	                    )
 	                ),

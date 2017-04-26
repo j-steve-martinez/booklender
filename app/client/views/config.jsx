@@ -39,6 +39,16 @@ export default class Config extends React.Component {
             this.props.ajax(data);
 
         } else {
+            function findPos(obj) {
+                var curtop = 0;
+                if (obj.offsetParent) {
+                    do {
+                        curtop += obj.offsetTop;
+                    } while (obj = obj.offsetParent);
+                    return [curtop];
+                }
+            }
+            window.scrollTo(0, findPos(document.getElementById("error")));
             this.setState({ message: 'The passwords don\'t match!' });
         }
 
@@ -59,7 +69,7 @@ export default class Config extends React.Component {
                     <h1>Update Your Profile</h1>
                 </div>
                 <div className='text-danger' >
-                    <h3>
+                    <h3 id='error'>
                         {this.state.message}
                     </h3>
                 </div>
@@ -82,11 +92,11 @@ export default class Config extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password:</label>
-                        <input type="password" className="form-control" id="password"/>
+                        <input type="password" className="form-control" id="password" />
                     </div>
                     <div className="form-group">
                         <label htmlFor="confirm">Confirm:</label>
-                        <input type="password" className="form-control" id="confirm"/>
+                        <input type="password" className="form-control" id="confirm" />
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>

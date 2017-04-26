@@ -48,19 +48,33 @@ function ClickHandler() {
 
 	this.update = (req, res) => {
 		// console.log(req.body);
-		// var name, email, city, state;
+		var data, name, city, state, password;
+		name = req.body.name;
+		city = req.body.city;
+		state = req.body.state;
+		password = req.body.password;
+		if (password.length === 0) {
+			data = {
+				name: name,
+				city: city,
+				state: state
+			}
+		} else {
+			data = {
+				name: name,
+				city: city,
+				state: state,
+				password: password
+			}
+		}
+		// console.log(data);
 		User.findOneAndUpdate(
 			{
 				_id: req.body.id
 			},
 			{
-				$set:
-				{
-					name: req.body.name,
-					city: req.body.city,
-					state: req.body.state,
-					password: req.body.password
-				}
+				$set: data
+				
 			},
 			{ new: true },
 			(err, user) => {
@@ -88,10 +102,10 @@ function ClickHandler() {
 		};
 
 		Books.search(title, options, function (error, results, apiResponse) {
-				// console.log('googleBook search results');
-				// console.log(error);
-				// console.log(results);
-				// console.log(apiResponse);
+			// console.log('googleBook search results');
+			// console.log(error);
+			// console.log(results);
+			// console.log(apiResponse);
 			if (error) {
 				// console.log(error);
 				throw error;
